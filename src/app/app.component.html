@@ -1,0 +1,10 @@
+<label class="switch">
+    <span class="slider round" [ngClass]="{'checked-button': darkMode}" (click)="darkMode = !darkMode">
+        <span class="slider-circle" [ngClass]="{'checked': darkMode}" ></span>
+    </span>
+</label>
+<user></user>
+<starting-guide [(showStartingGuide)]="showStartingGuide" [ngClass]="{'invisible': !showStartingGuide}"></starting-guide>
+<div class="content" [ngClass]="{'dark': darkMode}">
+    <game-board></game-board>
+</div>

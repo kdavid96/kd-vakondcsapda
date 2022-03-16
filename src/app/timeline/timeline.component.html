@@ -1,0 +1,3 @@
+<div *ngFor="let time of data"  className="timeline-entry-container">
+    <span [style.color]="time.hit ? 'green' : 'red'" class="timeline-entry">{{time | timelinePipe}}</span>
+</div>

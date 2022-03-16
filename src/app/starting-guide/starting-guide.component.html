@@ -1,0 +1,28 @@
+<div class="starting-guide-container">
+    <mat-horizontal-stepper [linear]="false" [labelPosition]="'bottom'">
+
+        <mat-step [editable]="true" label="Első lépés" class="mat-step">
+            <div class="stepper-content">
+                <h1>Step 1</h1>
+                <button matStepperNext>Következő</button>
+            </div>
+        </mat-step>
+    
+        <mat-step [editable]="true" label="Második lépés">
+            <div class="stepper-content">
+                <h1>Step 2</h1>
+                <button matStepperNext>Következő</button>
+                <button matStepperPrevious>Előző</button>
+            </div>
+        </mat-step>
+    
+        <mat-step [editable]="true" label="Harmadik lépés">
+            <div class="stepper-content">
+                <h1>Step 3</h1>
+                <button (click)="changeStartingGuide()">Befejezés</button>
+                <button matStepperPrevious>Előző</button>
+            </div>
+        </mat-step>
+    
+    </mat-horizontal-stepper>
+</div>

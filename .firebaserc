@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "kd-vakondcsapda"
+  },
+  "targets": {
+    "kd-vakondcsapda": {
+      "hosting": {
+        "kd-vakondcsapda-canvas": [
+          "kd-vakondcsapda"
+        ]
+      }
+    }
+  }
+}

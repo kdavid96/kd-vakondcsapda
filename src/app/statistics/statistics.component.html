@@ -1,0 +1,8 @@
+<p>Statistics</p>
+<ul class="chart-selector">
+    <li (click)="destroy(); loadHitsPerSecondsChart()">Hits per Second</li>
+    <li (click)="destroy(); loadHitsPerGameChart()">Hits per Game</li>
+</ul>
+<div id="chartContainer">
+    <canvas id="myChart" width="450" height="450"></canvas>
+</div>

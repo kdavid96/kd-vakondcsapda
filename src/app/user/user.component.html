@@ -1,0 +1,7 @@
+<span class="profile-icon" (click)="isProfileOverlayOpen = !isProfileOverlayOpen">
+    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen}">Profile</button>
+    <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen}">Back</button>
+</span>
+<div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
+    THIS IS MY PROFILE
+</div>
