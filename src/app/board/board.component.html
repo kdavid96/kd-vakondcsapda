@@ -1,11 +1,11 @@
 <div class="container">
-  <div class="flex-column">
+  <div class="flex-row">
     <img src="../../assets/mole_trp_smol.png" id="mole" style="display: none;"/>
     <img src="../../assets/grass.png" id="grass" style="display: none;"/>
     <img src="../../assets/road.png" id="road" style="display: none;"/>
     <img src="../../assets/house.png" id="house" style="display: none;"/>
-    <div class="top-row" [ngClass]="{'relative': started}">
-      <div [ngClass]="{'invisible': dataProtection || statistics, 'flex-column': !started && !dataProtection && !statistics}">
+    <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics}">
+      <div [ngClass]="{'invisible': dataProtection || statistics, 'flex-column overlay': !started && !dataProtection && !statistics, 'started-row': started && !dataProtection && !statistics}">
         <h1 class="title" [ngClass]="{'invisible': started}">MOLE GAME</h1>
         <div class="game-data" [ngClass]="{'invisible': startOverlay}">
           <countdown (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
@@ -16,12 +16,12 @@
           </ul>
         </div>
         <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Play</button>
-        <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started}" style="background-color: red; margin-top: 15px;">Stop</button>
+        <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
         <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Data protection policy</button>
         <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Statistics</button>
       </div>
-      <div class="flex-column" [ngClass]="{'invisible': !dataProtection}">
+      <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
         <div class="game-data" style="padding: 35px; min-height: 69%">
           <h1 style="width: 100%">Data protection policy</h1>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore dolores ab iusto sunt consequatur natus quaerat provident eligendi velit sequi totam incidunt repellat, rem ducimus, praesentium eaque eum cupiditate blanditiis.
@@ -29,7 +29,7 @@
         </div>
         <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Back</button>
       </div>
-      <div class="flex-column" [ngClass]="{'invisible': !statistics}">
+      <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}">
         <div class="game-data" style="padding: 35px; min-height: 80%; width: 100%;">
           <statistics style="width: 80%;"></statistics>
         </div>
@@ -38,7 +38,7 @@
     </div>
     <div class="row">
       <canvas #board class="game-board" id="board">Your browser doesn't support canvas :(</canvas>
-      <div class="timeline-container" id="timeline-container" style="height: 100%; width: 230px; background: whitesmoke;">
+      <!--<div class="timeline-container" id="timeline-container" style="height: 100%; width: 230px; background: whitesmoke;">
         <timeline [reactionTimes]="reactionTimes" style="
         display: flex;
         position: relative;
@@ -47,7 +47,7 @@
         align-items: center;
         padding: 10px;
     "></timeline>
-      </div>
+      </div>-->
     </div>
     <div class="countdown-overlay" [ngClass]="{'invisible':  !startCountdown}"><p id="beginning-countdown">3</p></div>
     <div class="bottom-column" [ngClass]="{'invisible': dataProtection || !started}">
