@@ -24,6 +24,7 @@ export class BoardComponent implements OnInit {
   level: number = 1;
   direction: number;
   roadPlace: number;
+  roadCoordinate: number = 0;
   board: number[][];
   reactionTimes: any[] = [];
   squares: Array<Square> = [];
@@ -45,6 +46,8 @@ export class BoardComponent implements OnInit {
   timer: any;
   xPos: any;
   yPos: any;
+  offsetX: any;
+  offsetY: any;
 
   constructor(private reactionTimeService: ReactionTimeServiceService) {}
 
@@ -65,28 +68,67 @@ export class BoardComponent implements OnInit {
 
   setUpTouch(): void {
     var el = document.getElementById("board");
-    el.addEventListener("touchstart", this.handleStart, false);
-    el.addEventListener("touchend", this.handleEnd, false);
-    el.addEventListener("touchcancel", this.handleCancel, false);
-    el.addEventListener("touchmove", this.handleMove, false);
+    el.addEventListener("touchstart", this.handleStart.bind(this), false);
+    el.addEventListener("touchend", this.handleEnd.bind(this), false);
+    el.addEventListener("touchcancel", this.handleCancel.bind(this), false);
+    el.addEventListener("touchmove", this.handleMove.bind(this), false);
   }
 
   handleStart(evt): void {
+    console.log('start');
     var el = document.getElementById("board");
     var rect = el.getBoundingClientRect();
-    console.log(evt.clientX);
-    console.log(rect.left);
-    console.log(evt.clientY);
-    console.log(rect.top);
-    this.xPos = evt.clientX - rect.left;
-    this.yPos = evt.clientY - rect.top;
-    console.log(this.xPos);
-    console.log(this.yPos);
+    this.xPos = evt.targetTouches[0].screenX - rect.left;
+    this.yPos = evt.targetTouches[0].screenY - rect.top;
   }
 
   handleEnd(evt): void {
     console.log("end");
-    console.log(evt.changedTouches);
+    var el = document.getElementById("board");
+    var rect = el.getBoundingClientRect();
+    this.xPos = evt.changedTouches[0].clientX - rect.left;
+    this.yPos = evt.changedTouches[0].clientY - rect.top;
+    console.log('this.xpos:' + this.xPos);
+    console.log('this.ypos:' + this.yPos);
+    console.log('this.roadCoordinate:' + this.roadCoordinate);
+
+    if(this.direction){
+      //itt vizszintes az ut
+      if(this.molePosition === 0){
+        if(this.roadCoordinate > this.yPos){
+          console.log("talalt fenti molet");
+        }else{
+          console.log("nem talalt fenti molet");
+        }
+      }else{
+        if(this.roadCoordinate < this.xPos){
+          console.log('nem talalt lenti molet');
+        }else{
+          console.log('talalt lenti molet');
+        }
+      }
+    }else{
+      //itt fuggoleges az ut
+      if(this.molePosition === 2){
+        if(this.roadCoordinate > this.xPos){
+          console.log("talalt baloldali molet");
+        }else{
+          console.log('nem talalt baloldali molet');
+        }
+      }else{
+        if(this.roadCoordinate < this.xPos){
+          console.log('talalt jobboldali molet');
+        }else{
+          console.log('nem talalt jobboldali molet');
+        }
+      }
+    }
+    if(this.xPos > 120 && this.xPos < 1500){
+      console.log("x-en benne van");
+    }
+    if(this.yPos > 178 && this.yPos < 715){
+      console.log("y-on benne van");
+    }
   }
   handleCancel(evt): void {
     console.log("cancel" + evt.changedTouches);
@@ -197,14 +239,14 @@ export class BoardComponent implements OnInit {
     var localDirection;
     this.direction = Math.floor(Math.random() * 2);
     this.roadPlace = Math.floor(Math.random() * 9) + 1;
+
     localDirection = this.direction;
     if(!this.loaded){
       window.onload = function(){
         background = document.getElementById("grass") as HTMLImageElement;
         house = document.getElementById("house") as HTMLImageElement;
         road = document.getElementById("road") as HTMLImageElement;
-        ctxTry.drawImage(background, 40, 40, 40, 40);
-        
+        //fű kirajzolása        
         for (var i = 0; i < 11; i++) {
           for (var j = 0; j < 11; j++) {
               ctxTry.drawImage(background, j * 40, i * 40, 40, 40);
@@ -214,16 +256,16 @@ export class BoardComponent implements OnInit {
         //csak 5*blokkszélesség mert az első 0, ha 0 akkor vizszintes az út
         if(localDirection === 0){
           for(var i=0; i<11; i++){
-          ctxTry.drawImage(road, i*40, 5*40, 40, 40);
+          ctxTry.drawImage(road, i*BLOCK_SIZE, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
-          ctxTry.drawImage(house, 0, 5*40, 40, 40);
-          ctxTry.drawImage(house, 10*40, 5*40, 40, 40);
+          ctxTry.drawImage(house, 0, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          ctxTry.drawImage(house, 10*BLOCK_SIZE, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }else{
           for(var i=0; i<11; i++){
-            ctxTry.drawImage(road, 5*40, i*40, 40, 40);
-            }
-          ctxTry.drawImage(house, 5*40, 0, 40, 40);
-          ctxTry.drawImage(house, 5*40, 10*40, 40, 40);
+            ctxTry.drawImage(road, this.roadPlace*BLOCK_SIZE, i*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          }
+          ctxTry.drawImage(house, this.roadPlace*BLOCK_SIZE, 0, BLOCK_SIZE, BLOCK_SIZE);
+          ctxTry.drawImage(house, this.roadPlace*BLOCK_SIZE, 10*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
       }
       this.loaded = true;
@@ -232,7 +274,7 @@ export class BoardComponent implements OnInit {
       house = document.getElementById("house") as HTMLImageElement;
       road = document.getElementById("road") as HTMLImageElement;
       ctxTry.drawImage(background, 40, 40, 40, 40);
-      
+      //fű rajzolása
       for (var i = 0; i < 11; i++) {
         for (var j = 0; j < 11; j++) {
             ctxTry.drawImage(background, j * 40, i * 40, 40, 40);
@@ -288,6 +330,9 @@ export class BoardComponent implements OnInit {
       this.board = this.getEmptyBoard();
       this.direction = Math.floor(Math.random() * 2);
       this.roadPlace = Math.floor(Math.random() * 9) + 1;
+      this.roadCoordinate = (this.roadPlace+1) * BLOCK_SIZE;
+
+      console.log('roadCoordinate: ', this.roadCoordinate);
       var x,y;
       [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
 
@@ -310,6 +355,8 @@ export class BoardComponent implements OnInit {
     this.board = this.getEmptyBoard();
     this.direction = Math.floor(Math.random() * 2);
     this.roadPlace = Math.floor(Math.random() * 9) + 1;
+    this.roadCoordinate = this.roadPlace * BLOCK_SIZE;
+
     var x,y;
     [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
 

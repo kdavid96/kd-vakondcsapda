@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore'
   styleUrls: ['app.css']
 })
 export class AppComponent {
-  darkMode: boolean = false;
+  darkMode: boolean = true;
   showStartingGuide: boolean = false;
   title = 'kd-vakondcsapda-canvas';
   constructor(private store: AngularFirestore) { }
