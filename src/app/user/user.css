@@ -24,6 +24,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
+    z-index: 5;
 }
 
 .profile-button{
@@ -31,4 +32,6 @@
     border: 0;
     border-radius: 25px;
     cursor: pointer;
+    background: #538bff;
+    color: white;
 }

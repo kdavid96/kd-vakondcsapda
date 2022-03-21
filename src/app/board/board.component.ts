@@ -24,6 +24,7 @@ export class BoardComponent implements OnInit {
   level: number = 1;
   direction: number;
   roadPlace: number;
+  roadCoordinate: number = 0;
   board: number[][];
   reactionTimes: any[] = [];
   squares: Array<Square> = [];
@@ -40,11 +41,14 @@ export class BoardComponent implements OnInit {
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
+  showStartingGuide: boolean = false;
   beginningCountdown: HTMLElement;
   count: number = 3;
   timer: any;
   xPos: any;
   yPos: any;
+  offsetX: any;
+  offsetY: any;
 
   constructor(private reactionTimeService: ReactionTimeServiceService) {}
 
@@ -65,28 +69,89 @@ export class BoardComponent implements OnInit {
 
   setUpTouch(): void {
     var el = document.getElementById("board");
-    el.addEventListener("touchstart", this.handleStart, false);
-    el.addEventListener("touchend", this.handleEnd, false);
-    el.addEventListener("touchcancel", this.handleCancel, false);
-    el.addEventListener("touchmove", this.handleMove, false);
+    el.addEventListener("touchstart", this.handleStart.bind(this), false);
+    el.addEventListener("touchend", this.handleEnd.bind(this), false);
+    el.addEventListener("touchcancel", this.handleCancel.bind(this), false);
+    el.addEventListener("touchmove", this.handleMove.bind(this), false);
   }
 
   handleStart(evt): void {
     var el = document.getElementById("board");
     var rect = el.getBoundingClientRect();
-    console.log(evt.clientX);
-    console.log(rect.left);
-    console.log(evt.clientY);
-    console.log(rect.top);
-    this.xPos = evt.clientX - rect.left;
-    this.yPos = evt.clientY - rect.top;
-    console.log(this.xPos);
-    console.log(this.yPos);
+    this.xPos = evt.targetTouches[0].screenX - rect.left;
+    this.yPos = evt.targetTouches[0].screenY - rect.top;
   }
 
   handleEnd(evt): void {
-    console.log("end");
-    console.log(evt.changedTouches);
+    var el = document.getElementById("board");
+    var rect = el.getBoundingClientRect();
+    this.xPos = evt.changedTouches[0].clientX - rect.left;
+    this.yPos = evt.changedTouches[0].clientY - rect.top;
+    //ablak atmeretezes eseten is helyes az utpozicio
+    this.roadCoordinate = (this.roadPlace+1) * (rect.width / 11);
+
+    if(this.direction){
+      //0 = fent, 1 = lent, 2 = bal, 3 = jobb
+      //itt vizszintes az ut
+      if(this.molePosition === 0){
+        if(this.roadCoordinate > this.yPos){
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
+        }else{
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
+        }
+      }else{
+        if(this.roadCoordinate < this.yPos){
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
+        }else{
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
+        }
+      }
+    }else{
+      //itt fuggoleges az ut
+      if(this.molePosition === 2){
+        if(this.roadCoordinate > this.xPos){
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
+        }else{
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
+        }
+      }else{
+        if(this.roadCoordinate < this.xPos){
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
+        }else{
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
+        }
+      }
+    }
+    this.points = parseFloat(this.points.toFixed(2));
+    this.regenerateBoard();
   }
   handleCancel(evt): void {
     console.log("cancel" + evt.changedTouches);
@@ -197,14 +262,14 @@ export class BoardComponent implements OnInit {
     var localDirection;
     this.direction = Math.floor(Math.random() * 2);
     this.roadPlace = Math.floor(Math.random() * 9) + 1;
+
     localDirection = this.direction;
     if(!this.loaded){
       window.onload = function(){
         background = document.getElementById("grass") as HTMLImageElement;
         house = document.getElementById("house") as HTMLImageElement;
         road = document.getElementById("road") as HTMLImageElement;
-        ctxTry.drawImage(background, 40, 40, 40, 40);
-        
+        //fű kirajzolása        
         for (var i = 0; i < 11; i++) {
           for (var j = 0; j < 11; j++) {
               ctxTry.drawImage(background, j * 40, i * 40, 40, 40);
@@ -214,16 +279,16 @@ export class BoardComponent implements OnInit {
         //csak 5*blokkszélesség mert az első 0, ha 0 akkor vizszintes az út
         if(localDirection === 0){
           for(var i=0; i<11; i++){
-          ctxTry.drawImage(road, i*40, 5*40, 40, 40);
+          ctxTry.drawImage(road, i*BLOCK_SIZE, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
-          ctxTry.drawImage(house, 0, 5*40, 40, 40);
-          ctxTry.drawImage(house, 10*40, 5*40, 40, 40);
+          ctxTry.drawImage(house, 0, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          ctxTry.drawImage(house, 10*BLOCK_SIZE, this.roadPlace*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }else{
           for(var i=0; i<11; i++){
-            ctxTry.drawImage(road, 5*40, i*40, 40, 40);
-            }
-          ctxTry.drawImage(house, 5*40, 0, 40, 40);
-          ctxTry.drawImage(house, 5*40, 10*40, 40, 40);
+            ctxTry.drawImage(road, this.roadPlace*BLOCK_SIZE, i*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          }
+          ctxTry.drawImage(house, this.roadPlace*BLOCK_SIZE, 0, BLOCK_SIZE, BLOCK_SIZE);
+          ctxTry.drawImage(house, this.roadPlace*BLOCK_SIZE, 10*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
       }
       this.loaded = true;
@@ -232,7 +297,7 @@ export class BoardComponent implements OnInit {
       house = document.getElementById("house") as HTMLImageElement;
       road = document.getElementById("road") as HTMLImageElement;
       ctxTry.drawImage(background, 40, 40, 40, 40);
-      
+      //fű rajzolása
       for (var i = 0; i < 11; i++) {
         for (var j = 0; j < 11; j++) {
             ctxTry.drawImage(background, j * 40, i * 40, 40, 40);
@@ -288,10 +353,12 @@ export class BoardComponent implements OnInit {
       this.board = this.getEmptyBoard();
       this.direction = Math.floor(Math.random() * 2);
       this.roadPlace = Math.floor(Math.random() * 9) + 1;
+      this.roadCoordinate = (this.roadPlace+1) * BLOCK_SIZE;
+
+      console.log('roadCoordinate: ', this.roadCoordinate);
       var x,y;
       [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
-
-      new Square(this.ctx, x, y).draw(x,y,this.roadPlace,this.direction);
+      new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
       
       //feltoltom a tileok tombjet majd kirajzolom
       this.squares.forEach((square, index) => {
@@ -310,10 +377,12 @@ export class BoardComponent implements OnInit {
     this.board = this.getEmptyBoard();
     this.direction = Math.floor(Math.random() * 2);
     this.roadPlace = Math.floor(Math.random() * 9) + 1;
+    this.roadCoordinate = this.roadPlace * BLOCK_SIZE;
+
     var x,y;
     [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
 
-    new Square(this.ctx, x, y).draw(x,y,this.roadPlace,this.direction);
+    new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
 
     this.squares.forEach((square, index) => {
       setTimeout(this.drawEverything,index * 1000, square, index, index, this.roadPlace, this.direction)
@@ -328,19 +397,19 @@ export class BoardComponent implements OnInit {
     if(half){
       //ha 1 akkor függőleges az út
       if(direction){
-        x = this.randomIntFromInterval(0, 9);
+        x = this.randomIntFromInterval(0, 10);
         y = this.randomIntFromInterval(0, roadPlace - 1);
       }else{
         x = this.randomIntFromInterval(0, roadPlace - 1);
-        y = this.randomIntFromInterval(0, 9);
+        y = this.randomIntFromInterval(0, 10);
       }
     }else{
       if(direction){
-        x = this.randomIntFromInterval(0, 9);
-        y = this.randomIntFromInterval(roadPlace + 1, 9);
+        x = this.randomIntFromInterval(0, 10);
+        y = this.randomIntFromInterval(roadPlace + 1, 10);
       }else{
-        x = this.randomIntFromInterval(roadPlace + 1, 9);
-        y = this.randomIntFromInterval(0, 9);
+        x = this.randomIntFromInterval(roadPlace + 1, 10);
+        y = this.randomIntFromInterval(0, 10);
       }
     }
 
@@ -348,10 +417,15 @@ export class BoardComponent implements OnInit {
     this.y = y;
 
     //0 = fent, 1 = lent, 2 = bal, 3 = jobb
+    
+    //TODO: VALAMIERT HA 10 A KOORDINATA, 0-RA RENDERELI ES IGY NYILVAN SZAR A TALALAT
+
     if(direction){
-      if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0
+      if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0;
+      if(y === 10) this.molePosition = 0;
     }else{
-      if(x > roadPlace) this.molePosition = 3; else this.molePosition = 2
+      if(x > roadPlace) this.molePosition = 3; else this.molePosition = 2;
+      if(x === 10) this.molePosition = 2;
     }
 
     return [x,y];

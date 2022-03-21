@@ -8,7 +8,7 @@ export class Square {
   private fps = 60;
   private loop;
 
-  constructor(private ctx: CanvasRenderingContext2D, private x: Number, private y: Number) {}
+  constructor(private ctx: CanvasRenderingContext2D) {}
 
 
   init(ctx, roadPlace, direction) {
@@ -71,20 +71,12 @@ export class Square {
 
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
       this.init(context, roadPlace, direction);
-      this.mole.src="../assets/mole_trp_smol.png"
+      this.mole.src="../assets/mole_trp_smol.png";
 
       //(0,0)---(360,360) közötti koordináták az átló
+      (outerZ*x) > 360 ? x = 0 : '';
+      (outerZ*y) > 360 ? y = 0 : '';
 
-      if(outerZ*x > 360) x = 0;
-      if(outerZ*y > 360) y = 0;
-
-      context.drawImage(
-        this.mole,
-        outerZ * x,
-        outerZ * y,
-        36,
-        36
-      )
-
+      context.drawImage(this.mole, x * 40, y * 40, 36, 36);
     }
   }
