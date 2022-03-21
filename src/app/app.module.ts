@@ -26,7 +26,6 @@ import { StartingGuideComponent } from './starting-guide/starting-guide.componen
     CountdownComponent,
     CountdownPipe,
     TimelineComponent,
-    TimelinePipe,
     StatisticsComponent,
     UserComponent,
     StartingGuideComponent
@@ -40,7 +39,9 @@ import { StartingGuideComponent } from './starting-guide/starting-guide.componen
     MatStepperModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    TimelinePipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

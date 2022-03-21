@@ -8,7 +8,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore'
 })
 export class AppComponent {
   darkMode: boolean = true;
-  showStartingGuide: boolean = false;
   title = 'kd-vakondcsapda-canvas';
   constructor(private store: AngularFirestore) { }
 }

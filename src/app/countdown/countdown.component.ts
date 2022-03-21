@@ -20,7 +20,7 @@ export class CountdownComponent implements OnInit {
 
   start(): void {
     this.endTime = new Date();
-    this.endTime.setSeconds(this.endTime.getSeconds() + 3000);
+    this.endTime.setSeconds(this.endTime.getSeconds() + 30);
     var timeDiff;
     const obs$ = interval(10);
     this.obs = obs$.subscribe((d) => {

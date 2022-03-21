@@ -41,6 +41,7 @@ export class BoardComponent implements OnInit {
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
+  showStartingGuide: boolean = false;
   beginningCountdown: HTMLElement;
   count: number = 3;
   timer: any;
@@ -75,7 +76,6 @@ export class BoardComponent implements OnInit {
   }
 
   handleStart(evt): void {
-    console.log('start');
     var el = document.getElementById("board");
     var rect = el.getBoundingClientRect();
     this.xPos = evt.targetTouches[0].screenX - rect.left;
@@ -83,52 +83,75 @@ export class BoardComponent implements OnInit {
   }
 
   handleEnd(evt): void {
-    console.log("end");
     var el = document.getElementById("board");
     var rect = el.getBoundingClientRect();
     this.xPos = evt.changedTouches[0].clientX - rect.left;
     this.yPos = evt.changedTouches[0].clientY - rect.top;
-    console.log('this.xpos:' + this.xPos);
-    console.log('this.ypos:' + this.yPos);
-    console.log('this.roadCoordinate:' + this.roadCoordinate);
+    //ablak atmeretezes eseten is helyes az utpozicio
+    this.roadCoordinate = (this.roadPlace+1) * (rect.width / 11);
 
     if(this.direction){
+      //0 = fent, 1 = lent, 2 = bal, 3 = jobb
       //itt vizszintes az ut
       if(this.molePosition === 0){
         if(this.roadCoordinate > this.yPos){
-          console.log("talalt fenti molet");
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
         }else{
-          console.log("nem talalt fenti molet");
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
         }
       }else{
-        if(this.roadCoordinate < this.xPos){
-          console.log('nem talalt lenti molet');
+        if(this.roadCoordinate < this.yPos){
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
         }else{
-          console.log('talalt lenti molet');
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
         }
       }
     }else{
       //itt fuggoleges az ut
       if(this.molePosition === 2){
         if(this.roadCoordinate > this.xPos){
-          console.log("talalt baloldali molet");
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
         }else{
-          console.log('nem talalt baloldali molet');
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
         }
       }else{
         if(this.roadCoordinate < this.xPos){
-          console.log('talalt jobboldali molet');
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points++;
+          this.moles++;
+          this.blinkGreen();
         }else{
-          console.log('nem talalt jobboldali molet');
+          this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
+          this.reactionTimes = this.reactionTimes.slice();
+          this.points*=0.9;
+          this.blinkRed();
         }
       }
     }
-    if(this.xPos > 120 && this.xPos < 1500){
-      console.log("x-en benne van");
-    }
-    if(this.yPos > 178 && this.yPos < 715){
-      console.log("y-on benne van");
-    }
+    this.points = parseFloat(this.points.toFixed(2));
+    this.regenerateBoard();
   }
   handleCancel(evt): void {
     console.log("cancel" + evt.changedTouches);
@@ -335,8 +358,7 @@ export class BoardComponent implements OnInit {
       console.log('roadCoordinate: ', this.roadCoordinate);
       var x,y;
       [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
-
-      new Square(this.ctx, x, y).draw(x,y,this.roadPlace,this.direction);
+      new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
       
       //feltoltom a tileok tombjet majd kirajzolom
       this.squares.forEach((square, index) => {
@@ -360,7 +382,7 @@ export class BoardComponent implements OnInit {
     var x,y;
     [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
 
-    new Square(this.ctx, x, y).draw(x,y,this.roadPlace,this.direction);
+    new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
 
     this.squares.forEach((square, index) => {
       setTimeout(this.drawEverything,index * 1000, square, index, index, this.roadPlace, this.direction)
@@ -375,19 +397,19 @@ export class BoardComponent implements OnInit {
     if(half){
       //ha 1 akkor függőleges az út
       if(direction){
-        x = this.randomIntFromInterval(0, 9);
+        x = this.randomIntFromInterval(0, 10);
         y = this.randomIntFromInterval(0, roadPlace - 1);
       }else{
         x = this.randomIntFromInterval(0, roadPlace - 1);
-        y = this.randomIntFromInterval(0, 9);
+        y = this.randomIntFromInterval(0, 10);
       }
     }else{
       if(direction){
-        x = this.randomIntFromInterval(0, 9);
-        y = this.randomIntFromInterval(roadPlace + 1, 9);
+        x = this.randomIntFromInterval(0, 10);
+        y = this.randomIntFromInterval(roadPlace + 1, 10);
       }else{
-        x = this.randomIntFromInterval(roadPlace + 1, 9);
-        y = this.randomIntFromInterval(0, 9);
+        x = this.randomIntFromInterval(roadPlace + 1, 10);
+        y = this.randomIntFromInterval(0, 10);
       }
     }
 
@@ -395,10 +417,15 @@ export class BoardComponent implements OnInit {
     this.y = y;
 
     //0 = fent, 1 = lent, 2 = bal, 3 = jobb
+    
+    //TODO: VALAMIERT HA 10 A KOORDINATA, 0-RA RENDERELI ES IGY NYILVAN SZAR A TALALAT
+
     if(direction){
-      if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0
+      if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0;
+      if(y === 10) this.molePosition = 0;
     }else{
-      if(x > roadPlace) this.molePosition = 3; else this.molePosition = 2
+      if(x > roadPlace) this.molePosition = 3; else this.molePosition = 2;
+      if(x === 10) this.molePosition = 2;
     }
 
     return [x,y];

@@ -1,14 +1,6 @@
 {
   "hosting": [
     {
-      "public": "dist/kd-vakondcsapda-canvas",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
-    },
-    {
       "target": "kd-vakondcsapda-canvas",
       "public": "dist/kd-vakondcsapda-canvas",
       "ignore": [

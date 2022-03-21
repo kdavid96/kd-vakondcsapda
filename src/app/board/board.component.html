@@ -5,31 +5,32 @@
     <img src="../../assets/road.png" id="road" style="display: none;"/>
     <img src="../../assets/house.png" id="house" style="display: none;"/>
     <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics}">
+      <starting-guide [(showStartingGuide)]="showStartingGuide" [ngClass]="{'invisible': !showStartingGuide}"></starting-guide>
       <div [ngClass]="{'invisible': dataProtection || statistics, 'flex-column overlay': !started && !dataProtection && !statistics, 'started-row': started && !dataProtection && !statistics}">
-        <h1 class="title" [ngClass]="{'invisible': started}">MOLE GAME</h1>
+        <h1 class="title" [ngClass]="{'invisible': started}">Téri Figyelem - Vakondcsapda</h1>
         <div class="game-data" [ngClass]="{'invisible': startOverlay}">
-          <countdown (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
+          <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
           <ul class="data-list">
             <p>Score: {{ points }}</p>
             <p>Moles hit: {{ moles }}</p>
             <p>Level: {{ level }}</p> 
           </ul>
         </div>
-        <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Play</button>
+        <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
         <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
-        <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Data protection policy</button>
-        <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Statistics</button>
+        <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
+        <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Statisztikák</button>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
         <div class="game-data" style="padding: 35px; min-height: 69%">
-          <h1 style="width: 100%">Data protection policy</h1>
+          <h1 style="width: 100%">Adatvédelmi nyilatkozat</h1>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore dolores ab iusto sunt consequatur natus quaerat provident eligendi velit sequi totam incidunt repellat, rem ducimus, praesentium eaque eum cupiditate blanditiis.
           Facilis illum recusandae quaerat, nostrum illo dolorum quam quibusdam labore explicabo vel facere tenetur harum ab nesciunt tempore debitis voluptate? Labore, necessitatibus adipisci ab maiores corrupti facilis non sapiente soluta?</p>
         </div>
-        <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Back</button>
+        <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Vissza</button>
       </div>
-      <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}">
+      <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}" style="height: 100%">
         <div class="game-data" style="padding: 35px; min-height: 80%; width: 100%;">
           <statistics style="width: 80%;"></statistics>
         </div>
@@ -38,16 +39,7 @@
     </div>
     <div class="row">
       <canvas #board class="game-board" id="board">Your browser doesn't support canvas :(</canvas>
-      <!--<div class="timeline-container" id="timeline-container" style="height: 100%; width: 230px; background: whitesmoke;">
-        <timeline [reactionTimes]="reactionTimes" style="
-        display: flex;
-        position: relative;
-        flex-direction: column-reverse;       
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-    "></timeline>
-      </div>-->
+      <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>
     <div class="countdown-overlay" [ngClass]="{'invisible':  !startCountdown}"><p id="beginning-countdown">3</p></div>
     <div class="bottom-column" [ngClass]="{'invisible': dataProtection || !started}">
