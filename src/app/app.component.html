@@ -1,9 +1,12 @@
-<label class="switch">
-    <span class="slider round" [ngClass]="{'checked-button': darkMode}" (click)="darkMode = !darkMode">
-        <span class="slider-circle" [ngClass]="{'checked': darkMode}" ></span>
-    </span>
-</label>
-<user></user>
+<div class="solar">
+    <span class="sun" [ngClass]="{'sun-in': !darkMode, 'sun-out': darkMode}"></span>
+    <span class="moon" [ngClass]="{'moon-in': darkMode, 'moon-out': !darkMode}"></span>
+    <label class="switch">
+        <span class="slider round" [ngClass]="{'checked-button': darkMode}" (click)="darkMode = !darkMode">
+            <span class="slider-circle" [ngClass]="{'checked': darkMode}" ></span>
+        </span>
+    </label>
+</div>
 <div class="content" [ngClass]="{'dark': darkMode}">
     <game-board style="width: 99%; height: 100%;"></game-board>
 </div>

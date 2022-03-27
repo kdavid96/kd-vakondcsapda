@@ -1,8 +1,12 @@
 <div class="chart-container">
-    <p>Statistics</p>
+    <p>Diagramok</p>
     <ul class="chart-selector">
-        <li (click)="destroy(); loadHitsPerSecondsChart()">Hits per Second</li>
-        <li (click)="destroy(); loadHitsPerGameChart()">Hits per Game</li>
+        <li (click)="destroy(); loadHitsPerSecondsChart()">Találatok másodpercenként</li>
+        <li (click)="destroy(); loadHitsPerGameChart()">Találatok játékonként</li>
+    </ul>
+    <ul class="chart-selector-small">
+        <li (click)="destroy(); loadHitsPerSecondsChart()">t/mp</li>
+        <li (click)="destroy(); loadHitsPerGameChart()">t/j</li>
     </ul>
     <div id="chartContainer">
         <canvas id="myChart" width="450" height="450"></canvas>

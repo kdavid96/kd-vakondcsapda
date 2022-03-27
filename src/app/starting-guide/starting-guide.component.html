@@ -1,26 +1,49 @@
+<button (click)="changeStartingGuide()" class="skip-button">Kihagyás</button>
 <div class="starting-guide-container">
     <mat-horizontal-stepper [linear]="false" [labelPosition]="'bottom'">
 
+        <mat-step [editable]="true" label="Általános tájékoztató" class="mat-step">
+            <div class="stepper-content">
+                <h1>Általános tájékoztató</h1>
+                <p>
+                    Az alkalmazás használatához szükséges egy ingyenesen regisztrálható felhasználói fiók.<br/>
+                    Az adatok tárolása és feldolgozása harmadik fél által biztosított szerveren történik.<br/>
+                    Az alkalmazás használatához szükséges megadnia a végzettségét valamint korcsoportját.<br/>
+                    Ezen adatok szükségesek az eredmények feldolgozásához.<br/>
+                    A felhasználó azonosítása email cím alapján történik, ennek következtében ennek megadása is szükséges az alkalmazás használatához.<br/>
+                    A "Tovább" gombra kattintva elfogadja a felhasználási feltételeket és továbblép az alkalmazás használatát bemutató útmutatóra.
+                </p>
+                <button matStepperNext>Következő</button>
+            </div>
+        </mat-step>
+
         <mat-step [editable]="true" label="Első lépés" class="mat-step">
             <div class="stepper-content">
-                <h1>Step 1</h1>
+                <h1>Első lépés</h1>
+                <p>Lépjen be a felhasználói fiókjába ha már rendelkezik eggyel, ha nem, akkor pedig regisztráljon egyet ingyenesen.</p>
+                <button matStepperPrevious>Előző</button>
                 <button matStepperNext>Következő</button>
             </div>
         </mat-step>
     
         <mat-step [editable]="true" label="Második lépés">
             <div class="stepper-content">
-                <h1>Step 2</h1>
-                <button matStepperNext>Következő</button>
+                <h1>Második lépés</h1>
+                <p>
+                    Válassza ki a nehézségi fokozatot, majd indítsa el a tesztet. <br/>
+                    Attól függően, hogy milyen eszközről indította el az alkalmazást, a találatot a helyes nyíl billentyű lenyomásával, érintőképernyős készülék esetén pedig, a pálya helyes részére kattintva regisztrálja az alkalmazás.
+                </p>
                 <button matStepperPrevious>Előző</button>
+                <button matStepperNext>Következő</button>
             </div>
         </mat-step>
     
         <mat-step [editable]="true" label="Harmadik lépés">
             <div class="stepper-content">
-                <h1>Step 3</h1>
-                <button (click)="changeStartingGuide()">Befejezés</button>
+                <h1>Harmadik lépés</h1>
+                <p>A teszt végeztével eredményeit megtekintheti a statisztikák fül alatt!</p>
                 <button matStepperPrevious>Előző</button>
+                <button (click)="changeStartingGuide()">Befejezés</button>
             </div>
         </mat-step>
     

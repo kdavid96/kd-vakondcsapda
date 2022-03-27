@@ -3,13 +3,13 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 60%;
-    height: 80%;
-    left: 20%;
-    top: 10%;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    z-index: 5;
-    background-color: #d9d9d9;
+    z-index: 16;
+    background: rgb(239,239,239);
+    background: linear-gradient(299deg, rgb(233 233 233) 0%, rgb(201 196 196 / 81%) 100%);
+    backdrop-filter: blur(25px);
     border-radius: 5px;
 }
 
@@ -24,7 +24,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
-    z-index: 5;
+    z-index: 17;
 }
 
 .profile-button{
@@ -34,4 +34,81 @@
     cursor: pointer;
     background: #538bff;
     color: white;
+}
+
+.profile-list{
+    list-style-type: none;
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.profile-list-items{
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+}
+
+.invisible {
+    display: none !important;
+}
+
+.button {
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+}
+
+.button:nth-last-of-type(2){
+    margin-bottom: 15px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+form {
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+form > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+form > div > input {
+    padding: 15px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+form > div > select {
+    width: 312px;
+    padding: 15px;
+    border-radius: 25px;
+}
+
+.gender-select {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 57%;
 }

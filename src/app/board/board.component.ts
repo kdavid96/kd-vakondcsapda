@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, HostListener, Input } from '@angular/core';
 import { COLS, ROWS, BLOCK_SIZE} from '../constants';
 import { CountdownComponent } from '../countdown/countdown.component';
-import { TimelineComponent } from '../timeline/timeline.component';
 import { StatisticsComponent } from '../statistics/statistics.component';
+import { TablesComponent } from '../tables/tables.component';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
 import { Square } from './square';
 
@@ -37,11 +37,12 @@ export class BoardComponent implements OnInit {
   started: boolean = false;
   dataProtection: boolean = false;
   statistics: boolean = false;
+  tables: boolean = false;
   molePosition: number = 0;
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
-  showStartingGuide: boolean = false;
+  showStartingGuide: boolean = true;
   beginningCountdown: HTMLElement;
   count: number = 3;
   timer: any;
@@ -49,17 +50,48 @@ export class BoardComponent implements OnInit {
   yPos: any;
   offsetX: any;
   offsetY: any;
+  isLandscape: boolean;
+  isProfileOverlayOpen: boolean = false;
 
   constructor(private reactionTimeService: ReactionTimeServiceService) {}
 
-  ngOnInit(): void {
-    this.initBoard();
+  @HostListener('window:orientationchange', ['$event'])
+  onOrientationChange(event) {
+    console.log('orientationChanged');
+    let orientation = screen.orientation.type;
     if(this.isTouchEnabled()){
       console.log("VAN TOUCHSCREEN");
+      if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
+        this.isLandscape = true;
+      } else {
+        this.isLandscape = false;
+      }
+      this.setUpTouch();
+    }
+  }
+
+  ngOnInit(): void {
+    this.initBoard();
+
+    let orientation = screen.orientation.type;
+
+    if(this.isTouchEnabled()){
+      if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
+        this.isLandscape = true;
+      } else {
+        this.isLandscape = false;
+      }
       this.setUpTouch();
     }else{
-      console.log("NINCS TOUCH SCREEN");
       document.addEventListener('keydown', this.logKey);
+    }
+
+    const letters = document.querySelectorAll('span');
+    let filteredLetters = [];
+    for(let i = 0; i < letters.length; i++){
+      if(letters[i].className == 'title-character'){
+        filteredLetters.push(letters[i]);
+      }
     }
   }
 
@@ -355,7 +387,6 @@ export class BoardComponent implements OnInit {
       this.roadPlace = Math.floor(Math.random() * 9) + 1;
       this.roadCoordinate = (this.roadPlace+1) * BLOCK_SIZE;
 
-      console.log('roadCoordinate: ', this.roadCoordinate);
       var x,y;
       [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
       new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);

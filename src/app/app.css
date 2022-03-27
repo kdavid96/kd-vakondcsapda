@@ -10,7 +10,7 @@
 
 .switch {
   position: fixed;
-  right: 15px;
+  right: 100px;
   top: 20px;
   display: inline-block;
   width: 60px;
@@ -78,4 +78,73 @@
 
 .dark{
   background: #22262e;
+}
+
+.solar{
+  position: absolute;
+  width: 100%;
+  height: 8%;
+  overflow: hidden;
+}
+
+.sun{
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: #ffe14f;
+  position: absolute;
+  right: -4%;
+  top: -75%;
+  box-shadow: 0 0 60px 30px #fff, 0 0 100px 60px #ffbc00, 0 0 140px 90px #ffef34;
+}
+
+.moon{
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: #adadad;
+  position: absolute;
+  right: -4%;
+  top: -75%;
+  box-shadow: 0 0 60px 30px #fff, 0 0 100px 60px #777777, 0 0 140px 90px #2e2e2e;
+}
+
+.sun-in{
+  animation: in 1s ease 0s 1 normal forwards;
+}
+
+.moon-in{
+  animation: in 1s ease 0s 1 normal forwards;
+}
+
+.sun-out{
+  animation: out 1s ease 0s 1 normal forwards;
+}
+
+.moon-out{
+  animation: out 1s ease 0s 1 normal forwards;
+}
+
+@keyframes in {
+  0% {
+    opacity: 0;
+    transform: translateY(-250px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(250px);
+  }
 }

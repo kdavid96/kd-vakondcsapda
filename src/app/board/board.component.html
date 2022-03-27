@@ -1,14 +1,32 @@
 <div class="container">
   <div class="flex-row">
     <img src="../../assets/mole_trp_smol.png" id="mole" style="display: none;"/>
+    <img src="../../assets/mole_trp_smol_v2.png" id="mole_v2" style="display: none;"/>
+    <img src="../../assets/mole_trp_smol_v3.png" id="mole_v3" style="display: none;"/>
     <img src="../../assets/grass.png" id="grass" style="display: none;"/>
     <img src="../../assets/road.png" id="road" style="display: none;"/>
     <img src="../../assets/house.png" id="house" style="display: none;"/>
-    <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics}">
+    <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics && !tables}">
       <starting-guide [(showStartingGuide)]="showStartingGuide" [ngClass]="{'invisible': !showStartingGuide}"></starting-guide>
-      <div [ngClass]="{'invisible': dataProtection || statistics, 'flex-column overlay': !started && !dataProtection && !statistics, 'started-row': started && !dataProtection && !statistics}">
-        <h1 class="title" [ngClass]="{'invisible': started}">Téri Figyelem - Vakondcsapda</h1>
-        <div class="game-data" [ngClass]="{'invisible': startOverlay}">
+      <div [ngClass]="{'invisible': dataProtection || statistics || tables, 'flex-column overlay': !started && !dataProtection && !statistics && !tables, 'started-row': started && !dataProtection && !statistics && !tables}">
+        <h1 class="title" [ngClass]="{'invisible': started || isLandscape}">
+          <span>V</span>
+          <span>a</span>
+          <span>k</span>
+          <span>o</span>
+          <span class="title-mole-container">
+            <span class="title-character">n</span>
+            <span class="title-mole"><img src="../../assets/mole_trp_smol.png" id="title-mole"/></span>
+          </span>
+          <span>d</span>
+          <span>c</span>
+          <span>s</span>
+          <span>a</span>
+          <span>p</span>
+          <span>d</span>
+          <span>a</span>
+        </h1>
+        <div class="game-data" [ngClass]="{'invisible': startOverlay || isLandscape}">
           <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
           <ul class="data-list">
             <p>Score: {{ points }}</p>
@@ -16,11 +34,20 @@
             <p>Level: {{ level }}</p> 
           </ul>
         </div>
-        <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
-        <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
+        <div [ngClass]="{'invisible': !isLandscape}">
+          <p>Az alkalmazás csak portré módban működik megfelelően.<br/> Kérem tartsa ennek megfelelően a készülékét!</p>
+        </div>
+        <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen}" class="button-container">
+          <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
+          <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
-        <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
-        <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Statisztikák</button>
+          <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
+          <button (click)="tables = true;" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Táblázatok</button>
+          <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Diagramok</button>
+        </div>
+        <div class="profile-container">
+          <user [isProfileOverlayOpen]="isProfileOverlayOpen"></user>
+        </div>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
         <div class="game-data" style="padding: 35px; min-height: 69%">
@@ -31,13 +58,19 @@
         <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Vissza</button>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}" style="height: 100%">
-        <div class="game-data" style="padding: 35px; min-height: 80%; width: 100%;">
+        <div class="game-data" style="padding: 35px; min-height: 80%;">
           <statistics style="width: 80%;"></statistics>
+          <button (click)="statistics = false" class="play-button">Back</button>
         </div>
-        <button (click)="statistics = false" class="play-button" style="margin-top: 15px;">Back</button>
+      </div>
+    <div class="flex-column overlay" [ngClass]="{'invisible': !tables}" style="height: 100%">
+      <div class="game-data" style="padding: 35px; min-height: 80%;">
+        <tables style="width: 80%;"></tables>
+        <button (click)="tables = false" class="play-button">Back</button>
       </div>
     </div>
-    <div class="row">
+  </div>
+    <div class="row" [ngClass]="{'invisible': isLandscape}">
       <canvas #board class="game-board" id="board">Your browser doesn't support canvas :(</canvas>
       <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>

@@ -1,7 +1,91 @@
-<span class="profile-icon" (click)="isProfileOverlayOpen = !isProfileOverlayOpen">
-    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen}">Profile</button>
-    <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen}">Back</button>
+<span class="profile-icon" (click)="isProfileOverlayOpen = !isProfileOverlayOpen; clearForm(); sendDataToParent()">
+    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen}">Profil</button>
+    <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen}">Vissza</button>
 </span>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
-    THIS IS MY PROFILE
+    <h1>Profil</h1>
+    <ul class="profile-list" [ngClass]="{'invisible': isRegistering || isLoggingIn}">
+        <li class="profile-list-items" (click)="isRegistering = true">Regisztráció</li>
+        <li class="profile-list-items" (click)="isLoggingIn = true">Bejelentkezés</li>
+    </ul>
+    <form [formGroup]="registerForm" [ngClass]="{'invisible': !isRegistering}" (ngSubmit)="onSubmitRegister()">
+        <div>
+            <label for="username">
+                Felhasználónév:
+            </label>
+            <input type="text" placeholder="" id="username" name="username">
+        </div>
+        <div>
+            <label for="email">
+                Email:
+            </label>
+            <input type="text" placeholder="" id="email" name="email">
+        </div>
+        <div>
+            <label for="password">
+                Jelszó:
+            </label>
+            <input type="password" placeholder="" id="password" name="password">
+        </div>
+        <div>
+            <label for="passwordRe">
+                Jelszó újra:
+            </label>
+            <input type="password" placeholder="" id="passwordRe" name="passwordRe">
+        </div>
+        <div>
+            <label for="ageGroup">
+                Korcsoport:
+            </label>
+            <select name="ageGroup" id="ageGroup">
+                <option value="">Válasszon korcsoportot...</option>
+                <option *ngFor="let age of ageGroups" [ngValue]="age">
+                    {{ age }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="education">
+                Végzettség:
+            </label>
+            <select name="education" id="education">
+                <option value="">Válasszon végzettségi szintet...</option>
+                <option *ngFor="let education of educationList" [ngValue]="education">
+                    {{ education }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="gender">
+                Nem:
+            </label>
+            <div class="gender-select">
+                <span><input type="radio" value="male" name="gender" ngModel> Férfi </span>
+                <span><input type="radio" value="female" name="gender" ngModel> Nő </span>
+                <span><input type="radio" value="other" name="gender" ngModel> Egyéb </span>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit">Regisztráció</button>
+            <button class="button" (click)="isRegistering = false; clearForm()">Vissza</button>    
+        </div>
+    </form>
+    <form [formGroup]="loginForm" [ngClass]="{'invisible': !isLoggingIn}" (ngSubmit)="onSubmitLogin()">
+        <div>
+            <label for="username">
+                Felhasználónév:
+            </label>
+            <input type="text" placeholder="" id="usernameLogin" name="usernameLogin">
+        </div>
+        <div>
+            <label for="password">
+                Jelszó:
+            </label>
+            <input type="password" placeholder="" id="passwordLogin" name="passwordLogin">
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit">Bejelentkezés</button>
+            <button class="button" (click)="isLoggingIn = false; clearForm()">Vissza</button>
+        </div>
+    </form>
 </div>

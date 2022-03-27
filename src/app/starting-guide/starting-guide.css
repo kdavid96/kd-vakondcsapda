@@ -8,7 +8,7 @@
     left: 0;
     top: 0;
     position: absolute;
-    z-index: 5;
+    z-index: 20;
     background-color: grey;
 }
 
@@ -37,7 +37,16 @@ button{
     padding: 25px;
     border: 0px;
     border-radius: 25px;
-    background: #3f51b5;
+    background: #538bff;
     color: white;
     cursor: pointer;
+}
+
+.skip-button{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 25;
+    padding: 15px;
+    margin: 5px;
 }
