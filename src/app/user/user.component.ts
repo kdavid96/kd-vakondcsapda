@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'user',
@@ -11,11 +12,17 @@ export class UserComponent implements OnInit {
   @Output() outputProfileOverlayOpen : EventEmitter<boolean> = new EventEmitter();
   isRegistering: boolean = false;
   isLoggingIn: boolean = false;
+  registered: boolean = true;
+  error: boolean = false;
+  user: any;
+  isLoggedIn: boolean = false;
+  errorMessage: string = "";
 
-  ageGroups: string[] = ['0-2', '20-40', '40-60', '60-80', '80-'];
+  ageGroups: string[] = ['0-20', '20-40', '40-60', '60-80', '80-'];
   educationList: string[] = ['Nincs', 'Általános iskola', 'Szakmunkásképző', 'Érettségi', 'Diploma', 'PhD'];
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private authService: AuthService) {
+  }
 
   registerForm = this.formBuilder.group({
     username: new FormControl('', Validators.required),
@@ -31,11 +38,14 @@ export class UserComponent implements OnInit {
   });
 
   loginForm = this.formBuilder.group({
-    username: '',
-    password: ''
+    emailLogin: '',
+    passwordLogin: ''
   });
 
   ngOnInit(): void {
+    this.authService.getUser().subscribe(user => {
+      this.user = JSON.parse(user.toString());
+      });
   }
 
   clearForm(): void {
@@ -47,16 +57,53 @@ export class UserComponent implements OnInit {
     this.outputProfileOverlayOpen.emit(!this.isProfileOverlayOpen);
   }
 
-  onSubmitLogin(): void {
-    console.log('Your login has been submitted', this.loginForm.value);
-    this.loginForm.reset();
-    this.isLoggingIn = false;
+  async onSubmitLogin() {
+      await this.authService.signIn(this.loginForm.value.emailLogin, this.loginForm.value.passwordLogin)
+        .then(() => {
+          this.loginForm.reset();
+          this.isLoggingIn = false;     
+          console.log('Your login has been submitted');
+          this.isLoggedIn = true;
+        })
+        .catch(error => {
+          this.clearForm();
+          this.registered = false;
+          this.error = true;
+          this.errorMessage = error;
+        });
+    }
+
+  async onSubmitRegister() {
+    console.log(this.registerForm.value);
+    if(this.registerForm.value.username === null || this.registerForm.value.email === null || this.registerForm.value.password === null || this.registerForm.value.passwordRe === null || this.registerForm.value.education === null || this.registerForm.value.gender === null){
+      this.error = true;
+      this.errorMessage = 'Az összes mező kitöltése kötelező!';
+      return;
+    }
+    
+    if(this.registerForm.value.password !== this.registerForm.value.passwordRe){
+      this.error = true;
+      this.errorMessage = 'A két jelszó nem egyezik meg!';
+      return;
+    }
+
+    await this.authService.signUp(this.registerForm.value.username, this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.ageGroup, this.registerForm.value.education)
+    .then(() => {
+      this.registerForm.reset();
+      console.log('Your registration has been submitted');
+      this.isLoggedIn = true;
+    })
+    .catch(error => {
+      this.clearForm();
+      this.registered = false;
+      this.error = true;
+      this.errorMessage = error;
+    });
   }
 
-  onSubmitRegister(): void {
-    console.log('Your registration has been submitted', this.registerForm.value);
-    this.registerForm.reset();
-    this.isRegistering = false;
+  signOut() {
+    this.authService.signOut();
+    this.isLoggedIn = false;
   }
 
 }

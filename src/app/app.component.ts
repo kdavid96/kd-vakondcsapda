@@ -9,5 +9,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore'
 export class AppComponent {
   darkMode: boolean = true;
   title = 'kd-vakondcsapda-canvas';
-  constructor(private store: AngularFirestore) { }
+  constructor(private store: AngularFirestore) {
+    localStorage.setItem('user', '0');
+  }
 }

@@ -37,6 +37,19 @@
         <div [ngClass]="{'invisible': !isLandscape}">
           <p>Az alkalmazás csak portré módban működik megfelelően.<br/> Kérem tartsa ennek megfelelően a készülékét!</p>
         </div>
+        <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen || started}" class="side-toggle-container">
+          <div class="side-toggle three-switch">
+                <span type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Könnyű</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="2" class="level-button" (click)="setDifficulty('medium')"><label [ngStyle]="{'background': difficulty==='medium' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Közepes</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="3" class="level-button" (click)="setDifficulty('hard')"><label [ngStyle]="{'background': difficulty==='hard' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Nehéz</label></span>
+          </div>
+          <div class="side-toggle five-switch">
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('1')"><label [ngStyle]="{'background': level===1 ? '#1ca339' : '#ffa7a7'}" for="radio-one">1.szint</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('2')"><label [ngStyle]="{'background': level===2 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2.szint</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('3')"><label [ngStyle]="{'background': level===3 ? '#1ca339' : '#ffa7a7'}" for="radio-one">3.szint</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('4')"><label [ngStyle]="{'background': level===4 ? '#1ca339' : '#ffa7a7'}" for="radio-one">4.szint</label></span>
+          </div>
+        </div>
         <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen}" class="button-container">
           <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
           <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
@@ -60,18 +73,18 @@
       <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}" style="height: 100%">
         <div class="game-data" style="padding: 35px; min-height: 80%;">
           <statistics style="width: 80%;"></statistics>
-          <button (click)="statistics = false" class="play-button">Back</button>
+          <button (click)="statistics = false" class="play-button">Vissza</button>
         </div>
       </div>
     <div class="flex-column overlay" [ngClass]="{'invisible': !tables}" style="height: 100%">
-      <div class="game-data" style="padding: 35px; min-height: 80%;">
-        <tables style="width: 80%;"></tables>
-        <button (click)="tables = false" class="play-button">Back</button>
+      <div class="game-data" style="min-height: 100%; width: 100%;">
+        <tables style="height: 100%; width: 100%"></tables>
+        <button (click)="tables = false" class="play-button">Vissza</button>
       </div>
     </div>
   </div>
     <div class="row" [ngClass]="{'invisible': isLandscape}">
-      <canvas #board class="game-board" id="board">Your browser doesn't support canvas :(</canvas>
+      <canvas #board class="game-board" id="board">A böngésző nem támogatja a canvas elemet :(</canvas>
       <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>
     <div class="countdown-overlay" [ngClass]="{'invisible':  !startCountdown}"><p id="beginning-countdown">3</p></div>

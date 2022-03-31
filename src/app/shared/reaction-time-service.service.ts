@@ -10,18 +10,17 @@ export class ReactionTimeServiceService {
 
   constructor(private firestore: AngularFirestore) { }
 
-  createReactionTimeResult(data) {
-    if(data.length){
+  createReactionTimeResult(data, id, difficulty) {
+    if(data.length && id !== null && id !== 0 && id !== 'noid'){
       return new Promise<any>((resolve, reject) => {
         this.firestore
           .collection('reactionTimes')
-          .add({data: data})
+          .add({data, id, difficulty})
           .then(res => {}, err=> reject(err))      
       })
     }else{
       return null;
     }
-    
   }
 
   getReactionTimeResults(){

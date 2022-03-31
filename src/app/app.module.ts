@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { IconModule } from '@ant-design/icons-angular';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from './app.component';
@@ -19,6 +21,7 @@ import { CountdownPipe } from './pipes/countdown.pipe';
 import { TimelinePipe } from './pipes/timeline.pipe';
 import { UserComponent } from './user/user.component';
 import { StartingGuideComponent } from './starting-guide/starting-guide.component';
+import { AuthService } from './shared/auth.service';
 
 @NgModule({
   declarations: [
@@ -40,10 +43,13 @@ import { StartingGuideComponent } from './starting-guide/starting-guide.componen
     IconModule,
     MatStepperModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   providers: [
-    TimelinePipe
+    TimelinePipe,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

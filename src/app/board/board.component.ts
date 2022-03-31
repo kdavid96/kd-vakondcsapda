@@ -52,8 +52,14 @@ export class BoardComponent implements OnInit {
   offsetY: any;
   isLandscape: boolean;
   isProfileOverlayOpen: boolean = false;
+  tapSound: any;
+  loggedInUser: any = null;
+  difficulty: string = "easy";
 
-  constructor(private reactionTimeService: ReactionTimeServiceService) {}
+  constructor(private reactionTimeService: ReactionTimeServiceService) {
+    this.loggedInUser = JSON.parse(localStorage.getItem('user'));
+    console.log(this.loggedInUser);
+  }
 
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
@@ -71,8 +77,8 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.tapSound = new Audio("../../assets/tap.m4a");
     this.initBoard();
-
     let orientation = screen.orientation.type;
 
     if(this.isTouchEnabled()){
@@ -204,6 +210,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -219,6 +226,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -234,6 +242,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -249,6 +258,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes = this.reactionTimes.slice();  
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -411,9 +421,13 @@ export class BoardComponent implements OnInit {
     this.roadCoordinate = this.roadPlace * BLOCK_SIZE;
 
     var x,y;
-    [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
+    let coordinateArray = [];
 
-    new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
+    switch(this.difficulty){
+      case 'easy': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); new Square(this.ctx).draw(x,y,this.roadPlace,this.direction); break;
+      case 'medium': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); coordinateArray.reverse(); new Square(this.ctx).drawMultiple(2,coordinateArray,this.roadPlace,this.direction);break;
+      case 'hard': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.reverse(); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(3,coordinateArray,this.roadPlace,this.direction);break;
+    }  
 
     this.squares.forEach((square, index) => {
       setTimeout(this.drawEverything,index * 1000, square, index, index, this.roadPlace, this.direction)
@@ -496,8 +510,9 @@ export class BoardComponent implements OnInit {
   }
 
   stop() {
-    console.log(this.reactionTimes);
-    this.reactionTimeService.createReactionTimeResult(this.reactionTimes);
+    let user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : {data: {uid: 'noid'}};
+    console.log(user.data);
+    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty);
     this.reactionTimes = [];
     this.setWhite();
     this.childCountdown.childStop();
@@ -506,5 +521,15 @@ export class BoardComponent implements OnInit {
 
   loadCharts() {
     this.childStatistics.loadHitsPerSecondsChart();
+  }
+
+  setDifficulty(string){
+    this.difficulty = string;
+    console.log(this.difficulty);
+  }
+
+  setLevel(string){
+    this.level = Math.floor(string);
+    console.log(this.level);
   }
 }

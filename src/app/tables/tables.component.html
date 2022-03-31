@@ -1,13 +1,47 @@
 <div class="chart-container">
-    <p>Táblázatok</p>
-    <table datatable class="row-border hover">
-        <thead>
-          <tr>
-            <th>Header</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Body</td></tr>
-        </tbody>
+    <p class="title">Táblázatok</p>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 data-table">
+
+      <ng-container matColumnDef=".">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element"> {{element.sum}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> User ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="difficulty">
+        <th mat-header-cell *matHeaderCellDef> Difficulty </th>
+        <td mat-cell *matCellDef="let element"> {{element.difficulty}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hits">
+        <th mat-header-cell *matHeaderCellDef> Hits </th>
+        <td mat-cell *matCellDef="let element"> {{element.hits}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="sum">
+        <th mat-header-cell *matHeaderCellDef> Sum </th>
+        <td mat-cell *matCellDef="let element"> {{element.sum}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="misses">
+        <th mat-header-cell *matHeaderCellDef> Misses </th>
+        <td mat-cell *matCellDef="let element"> {{element.misses}} </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
     </table>
+    
+    <mat-paginator class="mat-elevation-z8"
+    [length]="resultsArray?.length"
+    [pageIndex]="0"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10]"
+    ></mat-paginator>
+
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
+import { trigger, state, style, animate, transition } from '@angular/animations'
 
 @Component({
   selector: 'starting-guide',
@@ -9,12 +9,17 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class StartingGuideComponent implements OnInit {
   @Input() showStartingGuide: boolean; 
   @Output() showStartingGuideChange = new EventEmitter<boolean>();
+  
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   changeStartingGuide(): void {
     this.showStartingGuideChange.emit(false);
+  }
+
+  animate(number): void {
+    document.getElementById(number).classList.add('animate');
   }
 
 }
