@@ -1,9 +1,11 @@
-<span class="profile-icon" (click)="isProfileOverlayOpen = !isProfileOverlayOpen; clearForm(); sendDataToParent()">
-    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen}">Profil</button>
+<span class="profile-icon" [ngClass]="{'invisible': isStartingGuideOpen}" (click)="isProfileOverlayOpen = !isProfileOverlayOpen; clearForm(); sendDataToParent()">
+    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen || isGameStarted}">Profil</button>
     <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen || isRegistering || isLoggingIn}">Vissza</button>
 </span>
 <button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
+    <button class="profile-button back-button" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza</button>
+    <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza</button>
     <h1>Profil</h1>
     <ul class="profile-list" [ngClass]="{'invisible': isRegistering || isLoggingIn || isLoggedIn}">
         <li class="profile-list-items" (click)="isRegistering = true">Regisztráció</li>
@@ -108,7 +110,7 @@
             <input type="password" placeholder="" id="passwordLogin" formControlName="passwordLogin">
         </div>
         <div class="button-container">
-            <button class="button" type="submit">Bejelentkezés</button>
+            <button class="button" type="submit" [ngStyle]="{'background': 'rgb(3, 54, 108)'}">Bejelentkezés</button>
         </div>
         <div class="error" [ngClass]="{'transparent': !error}">
             <span style="color: red" [ngClass]="{'transparent': !error}">{{errorMessage}}</span>
@@ -116,8 +118,36 @@
     </form>
     <button class="button" [ngClass]="{'invisible': !isLoggingIn}" (click)="isLoggingIn = false; clearForm()">Vissza</button>
     <div class="profile-info" [ngClass]="{'invisible': !isLoggedIn}">
-        <div class="info-container">
-            <h1>Üdvözlöm, <span class="greeting">{{user?.data.username}}</span></h1>
+        <div class="info-container" [ngClass]="{'invisible': isEditing || isFollowing}">
+            <h1>Üdvözlöm, <span class="greeting">{{user?.data.username || 'Felhasználó'}}</span></h1>
+
+            <ul class="profile-menu">
+                <li (click)="isFollowing=true">Követett felhasználók</li>
+                <li (click)="isEditing=true">Felhasználói fiók szerkesztése</li>
+            </ul>
+
+            <div class="stats">
+                <h4 class="stats-title">Saját statisztikák</h4>
+                <ul class="stats-list">
+                    <li>Összes játszott kör: {{playedGames}}</li>
+                    <li>Átlagos köridő: {{avgTimePlayed}}</li>
+                    <li>Legjobb eredmény: {{bestScore}}</li>
+                    <li>Átlagos eredmény: {{avgScore}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="profile-edit" [ngClass]="{'invisible': !isEditing}">
+            <h1>Profil szerkesztése</h1>
+        </div>
+        <div class="following" [ngClass]="{'invisible': !isFollowing}">
+            <h1>Követett felhasználók</h1>
+            <ul class="following-list">
+                <li>Péter <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
+                <li>Ádám <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
+                <li>Vivien <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
+                <li>Laura <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
+                <li>János <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
+            </ul>
         </div>
     </div>
 </div>

@@ -29,7 +29,7 @@ export class TimelineComponent implements OnChanges {
     }else{
       box.classList.add("timeline-entry-left");
     }
-    if(this.time.hit){
+    if(this.time?.hit){
       box.style.color = 'green';
     }else{
       box.style.color = 'red';

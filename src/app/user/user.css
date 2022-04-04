@@ -6,10 +6,8 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 16;
+    z-index: 19;
     background: rgb(239,239,239);
-    background: linear-gradient(299deg, rgb(233 233 233) 0%, rgb(201 196 196 / 81%) 100%);
-    backdrop-filter: blur(25px);
     border-radius: 5px;
 }
 
@@ -17,10 +15,14 @@
     display: none;
 }
 
+.invisibleToo{
+    display: none;
+}
+
 .profile-icon{
     position: fixed;
     left: 15px;
-    top: 15px;
+    top: 10px;
     display: inline-block;
     width: 60px;
     height: 34px;
@@ -212,10 +214,110 @@ input[type=radio]:checked ~ .check {
     border: 5px solid #538bff;
 }
 
-input[type=radio]:checked ~ .check::before{
+input[type=radio]:checked ~ .check::before {
     background: #538bff;
 }
 
-input[type=radio]:checked ~ label{
+input[type=radio]:checked ~ label {
     color: #538bff;
+}
+
+.info-container {
+    height: 100%;
+    width: 100%;
+}
+
+.profile-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    gap: 25px;
+    margin-top: 15%;   
+}
+
+.profile-menu > li {
+    list-style-type: none;
+    color: white;
+    background: #538bff;
+    padding: 15px;
+    border-radius: 25px;
+}
+
+.profile-menu > li:hover {
+    background: #004ad4;
+    cursor: pointer;
+}
+
+.stats {
+    margin-top: 10%;
+    background: #21252d;
+    height: 45%;
+    border-radius: 10px;
+}
+
+.stats-title {
+    color: #ffc753;
+    margin-bottom: 5%;
+    position: relative;
+    top: 5%;
+}
+
+.stats-list {
+    color: white;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    margin-left: 35px;
+}
+
+.stats-list > li {
+    color: white;
+    list-style-type: none;
+}
+
+.back-button {
+    position: relative;
+    bottom: -85%;
+}
+
+.following-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    margin-top: 10%;
+}
+
+.following-list > li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.following-list > li > span {
+    color:#538bff;
+}
+
+.button-container-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.button-container-inline > button {
+    max-width: 150px;
+    font-size: .6rem;
+    padding: 10px;
+}
+
+.button-container-inline > button:nth-of-type(2):focus {
+    background: rgb(167, 38, 21);
 }

@@ -8,6 +8,10 @@ button {
   cursor: pointer;
 }
 
+button:hover{
+  background: #004ad4;
+}
+
 .game-board {
   height: 95%;
   width: auto;
@@ -40,8 +44,6 @@ button {
   align-items: center;
   position: absolute;
   background: rgb(239,239,239);
-  background: linear-gradient(299deg, rgba(239,239,239,1) 0%, rgba(239,239,239,0.8071429255295868) 100%);
-  backdrop-filter: blur(25px);
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   border-left: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 5px;
@@ -83,8 +85,8 @@ button {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  width: 85vh;
-  height: 85vh;
+  width: 90%;
+  height: 85%;
 }
 
 .invisible {
@@ -250,20 +252,21 @@ button {
 
 .side-toggle-container{
   position: absolute;
-  left: 15px;
+  left: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   width: 25%;
-  height: 85%;
+  height: 95%;
+  max-width: 100px;
 }
 
 .side-toggle{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   z-index: 18;
 }
 
@@ -290,6 +293,12 @@ button {
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
 	transition: all 0.1s ease-in-out;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .five-switch label:hover {
@@ -299,14 +308,6 @@ button {
 .five-switch input:checked + label {
 	background-color: #a5dc86;
 	box-shadow: none;
-}
-
-.five-switch label:first-of-type {
-	border-radius: 4px 0 0 4px;
-}
-
-.five-switch label:last-of-type {
-	border-radius: 0 4px 4px 0;
 }
 
 .three-switch{
@@ -332,6 +333,12 @@ button {
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
 	transition: all 0.1s ease-in-out;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .three-switch label:hover {
@@ -341,14 +348,6 @@ button {
 .three-switch input:checked + label {
 	background-color: #a5dc86;
 	box-shadow: none;
-}
-
-.three-switch label:first-of-type {
-	border-radius: 4px 0 0 4px;
-}
-
-.three-switch label:last-of-type {
-	border-radius: 0 4px 4px 0;
 }
 
 .level-button{
@@ -361,10 +360,38 @@ button {
   padding: 7px;
 }
 
-
 .level > button::nth-of-type(3){
   background-color: green;
 }
+
+@media screen and (max-width: 1600px) {
+  .three-switch label, .five-switch label {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .side-toggle-container{
+    flex-direction: row;
+    height: 25%;
+    width: 100%;
+    bottom: 35px;
+    left: 0;
+    top: auto;
+    max-width: 100%;
+  }
+
+  .side-toggle{
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .side-toggle-label{
+    display: none;
+  }
+}
+
 @media screen and (max-width: 1000px) {
   .row{
     display: block;
@@ -387,10 +414,10 @@ button {
   }
 
   .top-row{
-    width: 102%;
+    width: 103%;
     margin: 10px;
-    max-width: 102%;
-    height: 100%;
+    max-width: 103%;
+    height: 103%;
   }
   
   .flex-column{
@@ -428,13 +455,28 @@ button {
   .title{
     font-size: 2.5rem;
   }
+}
 
+@media  screen and (max-width: 700px) {
   .side-toggle-container{
-    flex-direction: row;
-    height: 25%;
-    width: 100%;
-    top: 0px;
-    left: 0;
+    flex-direction: column;
+  }
+
+  .three-switch label, .five-switch label {
+    width: 45px;
+    height: 45px;
+  }
+
+  .button-container{
+    top: -15%;
+  }
+}
+
+@media  screen and (max-width: 650px) {
+  .game-data{
+    position: relative;
+    top: -50px;
+    min-width: 80%;
   }
 }
 
@@ -442,12 +484,6 @@ button {
   .title{
     font-size: 1.5rem;
   }  
-}
-
-@media  screen and (max-width: 650px) {
-  .game-data{
-    min-width: 80%;
-  }
 }
 
 @media screen and (max-width: 500px) {
@@ -460,26 +496,14 @@ button {
   .side-toggle-container{
     flex-direction: column;
     width: 100%;
-    height: auto;
-    top: 75%;
-  }
-
-  .button-container{
-    top: -15%;
+    height: fit-content;
+    top: 70%;
   }
 
   .side-toggle{
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
-  }
-
-  .level-button{
-    padding: 10px;
-  }
-
-  .level-button > label{
-    padding: 10px;
   }
 }
 

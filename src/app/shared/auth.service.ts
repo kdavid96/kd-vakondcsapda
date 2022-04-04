@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { FirebaseError } from '@firebase/util';
-import { Observable, Subject } from 'rxjs';
+import { Firestore, collection, query, where } from 'firebase/firestore';
+import { BehaviorSubject, from, map, Observable, of, Subject } from 'rxjs';
+import { reactionTime } from './models/reactionTime.model';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +12,12 @@ import { Observable, Subject } from 'rxjs';
 export class AuthService {
     isLoggedIn = false;
     user = new Subject<Object>();
+    playedGames: number = 0;
+    avgTimePlayed: number = 0;
+    bestScore: number = 0;
+    avgScore: number = 0;
+    allMolesHit: number = 0;
+    allMolesMissed: number = 0;
 
     public getUser(): Observable<Object> {
         return this.user.asObservable();
@@ -39,6 +47,7 @@ export class AuthService {
         .then(res=>{
             this.isLoggedIn = true;
             localStorage.setItem('user', JSON.stringify(res.user));
+            this.user.next(res.user);
             let uid = res.user.uid;
             this.addUserData({uid, username, email, ageGroup, education});
         }).catch(error => {
@@ -64,7 +73,7 @@ export class AuthService {
                     } else {
                         console.log("No such document!");
                         localStorage.setItem('user', null);
-                        this.user.next(null);
+                        this.user.next(null); 
                     }
                 }).catch((error) => {
                     console.log("Error getting document:", error);
@@ -98,5 +107,36 @@ export class AuthService {
     signOut() {
         this.firebaseAuth.signOut();
         localStorage.removeItem('user');
+        this.user.next(null);
+        console.log(this.user);
+    }
+
+    async getUserStats(){
+        const valueChanges = this.firestore.collection('reactionTimes').valueChanges().pipe(
+            map(reactionTimes => reactionTimes.map(reactionTime => {
+                // @ts-ignore
+                if(reactionTime.id === this.user.uid){
+                    console.log('1 meccs');
+                    this.playedGames++;
+                    // @ts-ignore
+                    this.avgTimePlayed+=reactionTime.data.reduce((a,b) => a+b);
+                    // @ts-ignore
+                    this.bestScore = this.bestScore < reactionTime.score ? reactionTime.score : this.bestScore;
+                    // @ts-ignore
+                    this.avgScore += reactionTime.score;
+                    // @ts-ignore
+                    this.allMolesHit += reactionTime.data.map(data => data.hit ? 1 : 0);
+                    // @ts-ignore
+                    this.allMolesMissed += reactionTime.data.map(data => data.hit ? 0 : 1);
+                }
+            }))
+        );
+
+        valueChanges.subscribe();
+
+        this.avgTimePlayed /= this.playedGames;
+        this.avgScore /= this.playedGames;
+        console.log([this.playedGames, this.avgTimePlayed, this.bestScore, this.avgScore, this.allMolesHit, this.allMolesMissed]);
+        //return [this.playedGames, this.avgTimePlayed, this.bestScore, this.avgScore, this.allMolesHit, this.allMolesMissed];
     }
 }

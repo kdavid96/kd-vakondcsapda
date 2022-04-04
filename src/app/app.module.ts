@@ -8,6 +8,9 @@ import { IconModule } from '@ant-design/icons-angular';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from './app.component';
@@ -19,6 +22,8 @@ import { TablesComponent } from './tables/tables.component';
 
 import { CountdownPipe } from './pipes/countdown.pipe';
 import { TimelinePipe } from './pipes/timeline.pipe';
+import { DifficultyPipe } from './pipes/difficulty.pipe';
+import { HitsPipe } from './pipes/hits.pipe';
 import { UserComponent } from './user/user.component';
 import { StartingGuideComponent } from './starting-guide/starting-guide.component';
 import { AuthService } from './shared/auth.service';
@@ -29,6 +34,8 @@ import { AuthService } from './shared/auth.service';
     BoardComponent,
     CountdownComponent,
     CountdownPipe,
+    DifficultyPipe,
+    HitsPipe,
     TimelineComponent,
     StatisticsComponent,
     TablesComponent,
@@ -45,7 +52,10 @@ import { AuthService } from './shared/auth.service';
     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [
     TimelinePipe,

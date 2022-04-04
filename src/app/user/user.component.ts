@@ -10,13 +10,23 @@ import { AuthService } from '../shared/auth.service';
 export class UserComponent implements OnInit {
   @Input() isProfileOverlayOpen: boolean;
   @Output() outputProfileOverlayOpen : EventEmitter<boolean> = new EventEmitter();
+  @Input() isStartingGuideOpen: boolean;
+  @Input() isGameStarted: boolean;
   isRegistering: boolean = false;
   isLoggingIn: boolean = false;
   registered: boolean = true;
   error: boolean = false;
-  user: any;
   isLoggedIn: boolean = false;
+  isFollowing: boolean = false;
+  isEditing: boolean = false;
+  user: any;
   errorMessage: string = "";
+  playedGames: number = 0;
+  avgTimePlayed: number = 0;
+  bestScore: number = 0;
+  avgScore: number = 0;
+  allMolesHit: number = 0;
+  allMolesMissed: number = 0;
 
   ageGroups: string[] = ['0-20', '20-40', '40-60', '60-80', '80-'];
   educationList: string[] = ['Nincs', 'Általános iskola', 'Szakmunkásképző', 'Érettségi', 'Diploma', 'PhD'];
@@ -42,10 +52,11 @@ export class UserComponent implements OnInit {
     passwordLogin: ''
   });
 
-  ngOnInit(): void {
-    this.authService.getUser().subscribe(user => {
-      this.user = JSON.parse(user.toString());
-      });
+  ngOnInit() {
+    this.authService.getUser().subscribe(user => 
+      this.user = JSON.parse(user.toString()));
+    //[this.playedGames,this.avgTimePlayed,this.bestScore,this.avgScore,this.allMolesHit,this.allMolesMissed] = this.authService.getUserStats();
+    this.authService.getUserStats();
   }
 
   clearForm(): void {
@@ -58,20 +69,21 @@ export class UserComponent implements OnInit {
   }
 
   async onSubmitLogin() {
-      await this.authService.signIn(this.loginForm.value.emailLogin, this.loginForm.value.passwordLogin)
-        .then(() => {
-          this.loginForm.reset();
-          this.isLoggingIn = false;     
-          console.log('Your login has been submitted');
-          this.isLoggedIn = true;
-        })
-        .catch(error => {
-          this.clearForm();
-          this.registered = false;
-          this.error = true;
-          this.errorMessage = error;
-        });
-    }
+    await this.authService.signIn(this.loginForm.value.emailLogin, this.loginForm.value.passwordLogin)
+      .then(() => {
+        this.loginForm.reset();
+        this.isLoggingIn = false;     
+        console.log('Your login has been submitted');
+        this.isLoggedIn = true;
+        this.user = this.authService.getUser();
+      })
+      .catch(error => {
+        this.clearForm();
+        this.registered = false;
+        this.error = true;
+        this.errorMessage = error;
+      });
+  }
 
   async onSubmitRegister() {
     console.log(this.registerForm.value);

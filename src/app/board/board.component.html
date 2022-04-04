@@ -14,10 +14,7 @@
           <span>a</span>
           <span>k</span>
           <span>o</span>
-          <span class="title-mole-container">
-            <span class="title-character">n</span>
-            <span class="title-mole"><img src="../../assets/mole_trp_smol.png" id="title-mole"/></span>
-          </span>
+          <span>n</span>
           <span>d</span>
           <span>c</span>
           <span>s</span>
@@ -27,7 +24,7 @@
           <span>a</span>
         </h1>
         <div class="game-data" [ngClass]="{'invisible': startOverlay || isLandscape}">
-          <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
+          <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()" [duration]="level"></countdown>
           <ul class="data-list">
             <p>Score: {{ points }}</p>
             <p>Moles hit: {{ moles }}</p>
@@ -39,15 +36,17 @@
         </div>
         <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen || started}" class="side-toggle-container">
           <div class="side-toggle three-switch">
-                <span type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Könnyű</label></span>
-                <span type="radio" id="radio-one" name="switch-five" value="2" class="level-button" (click)="setDifficulty('medium')"><label [ngStyle]="{'background': difficulty==='medium' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Közepes</label></span>
-                <span type="radio" id="radio-one" name="switch-five" value="3" class="level-button" (click)="setDifficulty('hard')"><label [ngStyle]="{'background': difficulty==='hard' ? '#1ca339' : '#ffa7a7'}" for="radio-one">Nehéz</label></span>
+                <span class="side-toggle-label">Nehézségi szint:</span>
+                <span type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">I</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="2" class="level-button" (click)="setDifficulty('medium')"><label [ngStyle]="{'background': difficulty==='medium' ? '#1ca339' : '#ffa7a7'}" for="radio-one">II</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="3" class="level-button" (click)="setDifficulty('hard')"><label [ngStyle]="{'background': difficulty==='hard' ? '#1ca339' : '#ffa7a7'}" for="radio-one">III</label></span>
           </div>
           <div class="side-toggle five-switch">
-            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('1')"><label [ngStyle]="{'background': level===1 ? '#1ca339' : '#ffa7a7'}" for="radio-one">1.szint</label></span>
-            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('2')"><label [ngStyle]="{'background': level===2 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2.szint</label></span>
-            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('3')"><label [ngStyle]="{'background': level===3 ? '#1ca339' : '#ffa7a7'}" for="radio-one">3.szint</label></span>
-            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('4')"><label [ngStyle]="{'background': level===4 ? '#1ca339' : '#ffa7a7'}" for="radio-one">4.szint</label></span>
+            <span class="side-toggle-label">Játék hossza:</span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('1')"><label [ngStyle]="{'background': level===1 ? '#1ca339' : '#ffa7a7'}" for="radio-one">15s</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('2')"><label [ngStyle]="{'background': level===2 ? '#1ca339' : '#ffa7a7'}" for="radio-one">30s</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('4')"><label [ngStyle]="{'background': level===4 ? '#1ca339' : '#ffa7a7'}" for="radio-one">1m</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('8')"><label [ngStyle]="{'background': level===8 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2m</label></span>
           </div>
         </div>
         <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen}" class="button-container">
@@ -55,11 +54,11 @@
           <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
           <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
-          <button (click)="tables = true;" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Táblázatok</button>
+          <button (click)="tables = true;" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Eredménytáblák</button>
           <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Diagramok</button>
         </div>
         <div class="profile-container">
-          <user [isProfileOverlayOpen]="isProfileOverlayOpen"></user>
+          <user [isProfileOverlayOpen]="isProfileOverlayOpen" [isStartingGuideOpen]="showStartingGuide" [isGameStarted]="started"></user>
         </div>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
@@ -78,7 +77,7 @@
       </div>
     <div class="flex-column overlay" [ngClass]="{'invisible': !tables}" style="height: 100%">
       <div class="game-data" style="min-height: 100%; width: 100%;">
-        <tables style="height: 100%; width: 100%"></tables>
+        <tables style="height: 80%; width: 100%"></tables>
         <button (click)="tables = false" class="play-button">Vissza</button>
       </div>
     </div>

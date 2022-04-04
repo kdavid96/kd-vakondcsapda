@@ -58,7 +58,6 @@ export class BoardComponent implements OnInit {
 
   constructor(private reactionTimeService: ReactionTimeServiceService) {
     this.loggedInUser = JSON.parse(localStorage.getItem('user'));
-    console.log(this.loggedInUser);
   }
 
   @HostListener('window:orientationchange', ['$event'])
@@ -276,10 +275,10 @@ export class BoardComponent implements OnInit {
 
   timeSpent(miliseconds, hit) {
     if(this.reactionTimes.length === 0){
-      return {miliseconds: 30000 - miliseconds, hit: hit}
+      return {miliseconds: (this.level*15) - miliseconds, hit: hit}
     } else {
       let tempMiliseconds = this.reactionTimes.reduce((partialSum, a) => partialSum + a.miliseconds, 0);
-      return {miliseconds: 30000 - tempMiliseconds - miliseconds, hit}
+      return {miliseconds: (this.level*15) - tempMiliseconds - miliseconds, hit}
     }
   }
 
@@ -463,8 +462,6 @@ export class BoardComponent implements OnInit {
 
     //0 = fent, 1 = lent, 2 = bal, 3 = jobb
     
-    //TODO: VALAMIERT HA 10 A KOORDINATA, 0-RA RENDERELI ES IGY NYILVAN SZAR A TALALAT
-
     if(direction){
       if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0;
       if(y === 10) this.molePosition = 0;
@@ -512,7 +509,7 @@ export class BoardComponent implements OnInit {
   stop() {
     let user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : {data: {uid: 'noid'}};
     console.log(user.data);
-    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty);
+    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty, this.points);
     this.reactionTimes = [];
     this.setWhite();
     this.childCountdown.childStop();
@@ -525,7 +522,6 @@ export class BoardComponent implements OnInit {
 
   setDifficulty(string){
     this.difficulty = string;
-    console.log(this.difficulty);
   }
 
   setLevel(string){
