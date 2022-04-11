@@ -12,7 +12,7 @@
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>
           <span class="column-span">
-            Felhasználó ID
+            Felhasználónév
             <mat-form-field class="filter" floatLabel="never">
               <mat-label>Keresés</mat-label>
               <input matInput [formControl]="nameFilter">
@@ -58,6 +58,11 @@
       <ng-container matColumnDef="hits/misses">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Hibák/Találatok </th>
         <td mat-cell *matCellDef="let element" matTooltip="Info about the action"> {{element.misses/element.hits | hitsPipe}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="points">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pontok </th>
+        <td mat-cell *matCellDef="let element" matTooltip="Info about the action"> {{element.points}} </td>
       </ng-container>
     
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

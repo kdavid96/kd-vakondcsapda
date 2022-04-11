@@ -251,7 +251,7 @@ input[type=radio]:checked ~ label {
 }
 
 .stats {
-    margin-top: 5%;
+    margin-top: 10%;
     background: #21252d;
     height: 45%;
     border-radius: 10px;
@@ -300,8 +300,6 @@ input[type=radio]:checked ~ label {
     background: rgb(167, 38, 21);
 }
 
-.editing-back{
-    left: 40%;
-    position: relative;
-    bottom: -94%;
+form > div {
+    margin-bottom: 15px;
 }

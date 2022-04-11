@@ -1,12 +1,12 @@
 <span class="profile-icon" [ngClass]="{'invisible': isStartingGuideOpen}" (click)="isProfileOverlayOpen = !isProfileOverlayOpen; clearForm(); sendDataToParent()">
-    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen || isGameStarted}">Profil</button>
+    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen || isGameStarted}">{{isLoggedIn ? 'Profil': 'Bejelentkezés'}}</button>
     <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen || isRegistering || isLoggingIn}">Vissza</button>
 </span>
 <button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
-    <button class="profile-button back-button" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza</button>
+    <button class="profile-button back-button editing-back" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza</button>
     <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza</button>
-    <h1>Profil</h1>
+    <h1 [ngClass]="{'invisible': isLoggedIn}">Profil</h1>
     <ul class="profile-list" [ngClass]="{'invisible': isRegistering || isLoggingIn || isLoggedIn}">
         <li class="profile-list-items" (click)="isRegistering = true">Regisztráció</li>
         <li class="profile-list-items" (click)="isLoggingIn = true">Bejelentkezés</li>
@@ -35,6 +35,12 @@
                 Jelszó újra:
             </label>
             <input type="password" placeholder="" id="passwordRe" formControlName="passwordRe">
+        </div>
+        <div>
+            <label for="name">
+                Név:
+            </label>
+            <input type="text" placeholder="" id="name" formControlName="name">
         </div>
         <div>
             <label for="ageGroup">
@@ -89,7 +95,7 @@
             </div>
         </div>
         <div class="button-container">
-            <button class="button" type="submit">Regisztráció</button>
+            <button class="button" (click)="sendDataToParent()" type="submit">Regisztráció</button>
         </div>
         <div class="error" [ngClass]="{'invisible': !error}">
             <span style="color: red">{{errorMessage}}</span>
@@ -99,7 +105,7 @@
     <form [formGroup]="loginForm" [ngClass]="{'invisible': !isLoggingIn || isLoggedIn}" (ngSubmit)="onSubmitLogin()">
         <div>
             <label for="emailLogin">
-                Email cím:
+                Felhasználónév:
             </label>
             <input type="text" placeholder="" id="emailLogin" formControlName="emailLogin">
         </div>
@@ -110,7 +116,7 @@
             <input type="password" placeholder="" id="passwordLogin" formControlName="passwordLogin">
         </div>
         <div class="button-container">
-            <button class="button" type="submit" [ngStyle]="{'background': 'rgb(3, 54, 108)'}">Bejelentkezés</button>
+            <button class="button" type="submit" (click)="sendDataToParent()" [ngStyle]="{'background': 'rgb(3, 54, 108)'}">Bejelentkezés</button>
         </div>
         <div class="error" [ngClass]="{'transparent': !error}">
             <span style="color: red" [ngClass]="{'transparent': !error}">{{errorMessage}}</span>
@@ -119,35 +125,27 @@
     <button class="button" [ngClass]="{'invisible': !isLoggingIn}" (click)="isLoggingIn = false; clearForm()">Vissza</button>
     <div class="profile-info" [ngClass]="{'invisible': !isLoggedIn}">
         <div class="info-container" [ngClass]="{'invisible': isEditing || isFollowing}">
-            <h1>Üdvözlöm, <span class="greeting">{{user?.data.username || 'Felhasználó'}}</span></h1>
+            <h1 style="margin-top:15%">Üdvözlöm, <span class="greeting">{{user?.name || 'Felhasználó'}}</span></h1>
 
             <ul class="profile-menu">
                 <li (click)="isFollowing=true">Követett felhasználók</li>
                 <li (click)="isEditing=true">Felhasználói fiók szerkesztése</li>
             </ul>
 
-            <div class="stats">
+            <div class="stats" [ngClass]="{'invisible': isFollowing || isEditing}">
                 <h4 class="stats-title">Saját statisztikák</h4>
                 <ul class="stats-list">
-                    <li>Összes játszott kör: {{playedGames}}</li>
-                    <li>Átlagos köridő: {{avgTimePlayed}}</li>
-                    <li>Legjobb eredmény: {{bestScore}}</li>
-                    <li>Átlagos eredmény: {{avgScore}}</li>
+                    <li>Összes játszott menet: {{playedGames}}</li>
+                    <li>Átlagos köridő: {{avgTimePlayed}} mp</li>
+                    <li>Legjobb eredmény: {{bestScore}} pont</li>
+                    <li>Átlagos eredmény: {{avgScore}} pont</li>
                 </ul>
             </div>
         </div>
-        <div class="profile-edit" [ngClass]="{'invisible': !isEditing}">
-            <h1>Profil szerkesztése</h1>
+        <div [ngClass]="{'invisible': !isFollowing}">
+            <h1 style="margin-bottom: 15%">Felhasználók</h1>
+            <following [user]="user$"></following>
         </div>
-        <div class="following" [ngClass]="{'invisible': !isFollowing}">
-            <h1>Követett felhasználók</h1>
-            <ul class="following-list">
-                <li>Péter <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
-                <li>Ádám <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
-                <li>Vivien <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
-                <li>Laura <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
-                <li>János <span>Pontszám: 326</span> <div class="button-container-inline"><button class="profile-button">Eredmények megtekintése</button><button class="profile-button">Követés megszűntetése</button></div></li>
-            </ul>
-        </div>
+        <edit-profile [ngClass]="{'invisible': !isEditing}"></edit-profile>
     </div>
 </div>

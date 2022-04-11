@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FirebaseError } from '@firebase/util';
-import { Firestore, collection, query, where } from 'firebase/firestore';
 import { BehaviorSubject, from, map, Observable, of, Subject } from 'rxjs';
-import { reactionTime } from './models/reactionTime.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     isLoggedIn = false;
-    user = new Subject<Object>();
+    user$: BehaviorSubject<any> = new BehaviorSubject<any>({});
+    userStats$: BehaviorSubject<any> = new BehaviorSubject<any>({});
+    userList$: BehaviorSubject<any> = new BehaviorSubject<any>({});
+    currentUid: string = '';
     playedGames: number = 0;
     avgTimePlayed: number = 0;
     bestScore: number = 0;
@@ -19,17 +21,41 @@ export class AuthService {
     allMolesHit: number = 0;
     allMolesMissed: number = 0;
 
-    public getUser(): Observable<Object> {
-        return this.user.asObservable();
+    public getUser(): Observable<any> {
+        return this.user$;
     }
 
-    constructor(public firebaseAuth: AngularFireAuth, private firestore: AngularFirestore) {}
+    public getUserList(): Observable<any> {
+        return this.userList$;
+    }
+
+    public getAuth(): AngularFireAuth {
+        return this.firebaseAuth;
+    }
+
+    public getStats(): Observable<any> {
+        return this.userStats$;
+    }
+
+    constructor(public firebaseAuth: AngularFireAuth, private firestore: AngularFirestore, private database: AngularFireDatabase) {
+        this.getUsers();
+        this.firebaseAuth.onAuthStateChanged(async user => {
+            if(user){
+                this.currentUid = user.uid;
+                this.getUserStats();
+                const userRef = this.firestore.collection('users').doc(user.uid).get();
+                userRef.subscribe(user => this.user$.next(user.data()));
+            }else{
+                localStorage.removeItem('user');
+                this.user$.next({});
+            }
+        })
+    }
 
     async signIn(email: string, password: string) {
         await this.firebaseAuth.signInWithEmailAndPassword(email, password)
-        .then(res=>{
+        .then(async res=>{
             this.isLoggedIn = true;
-            this.getUserData(res.user.uid);
         }).catch(error => {
             if(error instanceof FirebaseError){
                 switch(error.code){
@@ -42,14 +68,12 @@ export class AuthService {
         });
     }
 
-    async signUp(username: string, email: string, password: string, ageGroup: string, education: string) {
+    async signUp(username: string, email: string, password: string, ageGroup: string, education: string, name:string) {
         await this.firebaseAuth.createUserWithEmailAndPassword(email, password)
         .then(res=>{
             this.isLoggedIn = true;
-            localStorage.setItem('user', JSON.stringify(res.user));
-            this.user.next(res.user);
             let uid = res.user.uid;
-            this.addUserData({uid, username, email, ageGroup, education});
+            this.addUserData({uid, username, email, ageGroup, education, name});
         }).catch(error => {
             if(error instanceof FirebaseError){
                 switch(error.code){
@@ -60,34 +84,6 @@ export class AuthService {
                 }
             }
         });
-    }
-
-    async getUserData(uid){
-        if(uid.length){
-            try {
-                const docRef = this.firestore.doc(`users/${uid}`);
-                docRef.get().toPromise().then((doc) => {
-                    if (doc.exists) {
-                        localStorage.setItem('user', JSON.stringify(doc.data()));
-                        this.user.next(JSON.stringify(doc.data()));
-                    } else {
-                        console.log("No such document!");
-                        localStorage.setItem('user', null);
-                        this.user.next(null); 
-                    }
-                }).catch((error) => {
-                    console.log("Error getting document:", error);
-                    localStorage.setItem('user', null);
-                    this.user.next(null);
-                    return null;
-                });
-            } catch (err) {
-                console.error(err);
-                localStorage.setItem('user', null);
-                this.user.next(null);
-                return null;
-            }
-        } else return null;
     }
 
     addUserData(data) {
@@ -104,39 +100,83 @@ export class AuthService {
         }
     }
 
-    signOut() {
-        this.firebaseAuth.signOut();
-        localStorage.removeItem('user');
-        this.user.next(null);
-        console.log(this.user);
+    addToken(data){
+        if(data){
+            this.database.object('tokens/').update(data); 
+            return new Promise<any>((resolve, reject) => {
+                this.firestore
+                    .collection('tokens')
+                    .doc(this.getKeyByValue(data, data[Object.keys(data)[0]]))
+                    .set(data)
+                    .then(res => {}, err => reject(err))
+                }
+            );
+        }else{
+            return null;
+        }
     }
 
-    async getUserStats(){
+    getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+    signOut() {
+        this.firebaseAuth.signOut();
+    }
+
+    getUsers() {
+        let tempUserList;
+        const valueChanges = this.firestore.collection('users').valueChanges().pipe(
+            map(users => tempUserList = users)
+        )
+
+        valueChanges.subscribe(() => {
+            this.userList$.next(tempUserList);
+        });
+    }
+
+    async getUserStats() {
         const valueChanges = this.firestore.collection('reactionTimes').valueChanges().pipe(
-            map(reactionTimes => reactionTimes.map(reactionTime => {
-                // @ts-ignore
-                if(reactionTime.id === this.user.uid){
-                    console.log('1 meccs');
+            map(reactionTimes => reactionTimes.map(reactionTimeMap => {
+                let reactionTime: any = reactionTimeMap
+                if(reactionTime.id === this.currentUid){
                     this.playedGames++;
-                    // @ts-ignore
-                    this.avgTimePlayed+=reactionTime.data.reduce((a,b) => a+b);
-                    // @ts-ignore
-                    this.bestScore = this.bestScore < reactionTime.score ? reactionTime.score : this.bestScore;
-                    // @ts-ignore
-                    this.avgScore += reactionTime.score;
-                    // @ts-ignore
-                    this.allMolesHit += reactionTime.data.map(data => data.hit ? 1 : 0);
-                    // @ts-ignore
-                    this.allMolesMissed += reactionTime.data.map(data => data.hit ? 0 : 1);
+                    this.avgTimePlayed = reactionTime.data.reduce((avgTimePlayed,a) => avgTimePlayed + a.miliseconds, 0);
+                    this.bestScore = this.bestScore < reactionTime.points ? reactionTime.points : this.bestScore;
+                    this.avgScore += reactionTime.points;
+                    reactionTime.data.map(data => this.allMolesHit += data.hit ? 1 : 0);
+                    reactionTime.data.map(data => this.allMolesMissed += data.hit ? 0 : 1);
                 }
             }))
         );
 
-        valueChanges.subscribe();
+        valueChanges.subscribe(() => {
+            this.avgTimePlayed /= this.playedGames;
+            this.avgTimePlayed = parseFloat(Math.floor(this.avgTimePlayed / 1000).toFixed(2));
+            this.avgScore = parseFloat((this.avgScore / this.playedGames).toFixed(2));
+            this.userStats$.next({playedGames: this.playedGames, avgTimePlayed: this.avgTimePlayed, bestScore: this.bestScore,avgScore: this.avgScore,allMolesHit: this.allMolesHit,allMolesMissed: this.allMolesMissed});
+        });
+    }
 
-        this.avgTimePlayed /= this.playedGames;
-        this.avgScore /= this.playedGames;
-        console.log([this.playedGames, this.avgTimePlayed, this.bestScore, this.avgScore, this.allMolesHit, this.allMolesMissed]);
-        //return [this.playedGames, this.avgTimePlayed, this.bestScore, this.avgScore, this.allMolesHit, this.allMolesMissed];
+    getFollowers(uid: string) {
+        return this.database.object(`followers/${uid}`);
+    }
+
+    getFollowing(followerId: string, followedId: string) {
+        return this.database.object(`following/${followerId}/${followedId}`)
+    }
+
+    follow(followerId: string, followedId: string){
+        this.database.object(`followers/${followedId}`).update({[followerId]: true});
+        this.database.object(`following/${followerId}`).update({[followedId]: true});
+    }
+
+    unfollow(followerId: string, followedId: string){
+        this.database.object(`followers/${followedId}/${followerId}`).remove();
+        this.database.object(`following/${followerId}/${followedId}`).remove();
+    }
+
+    registerUser(userId){
+        this.database.object(`followers/${userId}`).update({});
     }
 }

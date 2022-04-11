@@ -32,7 +32,7 @@
           </ul>
         </div>
         <div [ngClass]="{'invisible': !isLandscape}">
-          <p>Az alkalmazás csak portré módban működik megfelelően.<br/> Kérem tartsa ennek megfelelően a készülékét!</p>
+          <p>Az alkalmazás csak álló módban, valamint nagyméretű kijelzőn működik megfelelően.<br/> Kérem tartsa ennek megfelelően a készülékét!</p>
         </div>
         <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen || started}" class="side-toggle-container">
           <div class="side-toggle three-switch">
@@ -58,14 +58,15 @@
           <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Diagramok</button>
         </div>
         <div class="profile-container">
-          <user [isProfileOverlayOpen]="isProfileOverlayOpen" [isStartingGuideOpen]="showStartingGuide" [isGameStarted]="started"></user>
+          <user (isLoggedInOutput)="receiveDataFromChild($event)" (isClickedOutput)="isClickedEvent($event)" [isProfileOverlayOpen]="isProfileOverlayOpen" [isStartingGuideOpen]="showStartingGuide" [isGameStarted]="started" [isLoggedInInput]="isLoggedIn"></user>
         </div>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
         <div class="game-data" style="padding: 35px; min-height: 69%">
           <h1 style="width: 100%">Adatvédelmi nyilatkozat</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore dolores ab iusto sunt consequatur natus quaerat provident eligendi velit sequi totam incidunt repellat, rem ducimus, praesentium eaque eum cupiditate blanditiis.
-          Facilis illum recusandae quaerat, nostrum illo dolorum quam quibusdam labore explicabo vel facere tenetur harum ab nesciunt tempore debitis voluptate? Labore, necessitatibus adipisci ab maiores corrupti facilis non sapiente soluta?</p>
+          <p>
+            A megadott felhasználói adatok a Google által üzemeltetett Firebase adatbázisban kerülnek tárolásra. Az adatok a jelszó és az e-mail cím kivételével felhasználásra kerülnek az eredmények kiértékelésekor. A felhasználó a teszt elindításával tudomásul veszi és hozzájárul a megadott adatok feldolgozásához.
+          </p>
         </div>
         <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Vissza</button>
       </div>
@@ -77,7 +78,7 @@
       </div>
     <div class="flex-column overlay" [ngClass]="{'invisible': !tables}" style="height: 100%">
       <div class="game-data" style="min-height: 100%; width: 100%;">
-        <tables style="height: 80%; width: 100%"></tables>
+        <tables style="width: 100%"></tables>
         <button (click)="tables = false" class="play-button">Vissza</button>
       </div>
     </div>
@@ -91,4 +92,5 @@
       <span class="light" id="light"></span>
     </div>
   </div>
+  <notification-permission [ngClass]="{'invisible': !isCookieVisible || !isLoggedIn}" style="display: flex;justify-content: center;align-items: flex-end;width: 100%;height: 100%;position: absolute;top: 0;"></notification-permission>
 </div>

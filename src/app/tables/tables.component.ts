@@ -3,8 +3,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
-import { tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'tables',
@@ -13,7 +14,8 @@ import { ReactionTimeServiceService } from '../shared/reaction-time-service.serv
 })
 export class TablesComponent implements OnInit, AfterViewInit {
   resultsArray: any[] = [];
-  displayedColumns: string[] = ['id', 'date', 'difficulty', 'sum', 'hits', 'misses'];
+  userList: any;
+  displayedColumns: string[] = ['id', 'date', 'difficulty', 'sum', 'hits', 'misses', 'points'];
   dataSource;
 
   @ViewChild(MatPaginator)
@@ -29,16 +31,40 @@ export class TablesComponent implements OnInit, AfterViewInit {
     difficulty: ''
   };
 
-  constructor(private reactionTimeService: ReactionTimeServiceService) { }
+  constructor(private reactionTimeService: ReactionTimeServiceService, private authService: AuthService) {
+    this.authService.getUserList().subscribe(userList => {
+      this.userList = userList,
+      this.loadReactionTimes()
+    });
+  }
 
-  ngOnInit(): void {
-    this.loadReactionTimes();
+  ngOnInit(): any {
     window.addEventListener("resize", this.windowSizeListener.bind(this));
   }
 
   loadReactionTimes(): void {
-    this.reactionTimeService.getReactionTimeResults().subscribe(result => {
-      this.resultsArray = result.map(game => ({'id': game.id, 'difficulty': game.difficulty, 'date': game.date,'sum': Math.ceil(game.data.map(data => data.miliseconds).reduce((a,b) => a+b)/1000), 'hits': game.data.filter(a => a.hit ).length, 'misses': game.data.filter(a => !a.hit).length}));
+    this.reactionTimeService.getReactionTimeResultsRealtime().snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c =>
+          //@ts-ignore
+          ({ key: c.payload.key, ...c.payload.val() })
+        )
+      )
+    ).subscribe(data => {
+      this.resultsArray = data.map(game => ({
+        'id': game.id,
+        'difficulty': game.difficulty,
+        'date': game.date,
+        'sum': Math.ceil(game.data.map(data => data.miliseconds).reduce((a,b) => a+b)/1000),
+        'hits': game.data.filter(a => a.hit ).length,
+        'misses': game.data.filter(a => !a.hit).length,
+        'points': game.points
+      }));
+      if(this.userList){
+        this.resultsArray.forEach((data,index) => {
+          this.resultsArray[index].id = this.userList.filter(user => user.data.uid === data.id)[0].data.username;
+        })  
+      }
       
       if(this.resultsArray.length === 0) {
         this.displayedColumns = ['.'];

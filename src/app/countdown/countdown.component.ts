@@ -22,11 +22,10 @@ export class CountdownComponent implements OnInit {
   start(): void {
     //this.endTime = new Date();
     this.endTime = performance.now();
-    this.endTime = Math.floor(this.endTime/1000) + (this.duration * 15);
+    this.endTime += (this.duration*15)*1000;
     var timeDiff;
     const obs$ = interval(10);
     this.obs = obs$.subscribe((d) => {
-      //this.startTime = new Date();
       this.startTime = performance.now();
       timeDiff = this.endTime - this.startTime;
       if(-15 < timeDiff && timeDiff < 15){
@@ -34,7 +33,7 @@ export class CountdownComponent implements OnInit {
         this.stop.emit();
       }
       timeDiff /= 1000;
-      this.miliseconds = (this.endTime - this.startTime);  
+      this.miliseconds = (this.endTime - this.startTime);
       this.outputTime.emit({miliseconds: this.miliseconds});
     })
   }

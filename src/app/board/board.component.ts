@@ -42,7 +42,6 @@ export class BoardComponent implements OnInit {
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
-  showStartingGuide: boolean = true;
   beginningCountdown: HTMLElement;
   count: number = 3;
   timer: any;
@@ -54,7 +53,10 @@ export class BoardComponent implements OnInit {
   isProfileOverlayOpen: boolean = false;
   tapSound: any;
   loggedInUser: any = null;
+  isLoggedIn: boolean = false;
   difficulty: string = "easy";
+  isCookieVisible: boolean = true;
+  showStartingGuide: boolean = this.isLoggedIn ? true : false;
 
   constructor(private reactionTimeService: ReactionTimeServiceService) {
     this.loggedInUser = JSON.parse(localStorage.getItem('user'));
@@ -62,10 +64,8 @@ export class BoardComponent implements OnInit {
 
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
-    console.log('orientationChanged');
     let orientation = screen.orientation.type;
     if(this.isTouchEnabled()){
-      console.log("VAN TOUCHSCREEN");
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
         this.isLandscape = true;
       } else {
@@ -202,7 +202,7 @@ export class BoardComponent implements OnInit {
       this.otherButton = true;
       //0 = fent, 1 = lent, 2 = bal, 3 = jobb
       // 38 = fent, 40 = lent, 37 = bal, 39 = jobb
-      if(e.keyCode === 37){
+      if(e.keyCode === 37 || e.which === 37){
         this.otherButton = false;
         if(this.molePosition === 2) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -218,7 +218,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 38){
+      if(e.keyCode === 38 || e.which === 38){
         this.otherButton = false;
         if(this.molePosition === 0) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -234,7 +234,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 39){
+      if(e.keyCode === 39 || e.which === 39){
         this.otherButton = false;
         if(this.molePosition === 3) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -250,7 +250,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 40){
+      if(e.keyCode === 40 || e.which === 40){
         this.otherButton = false;
         if(this.molePosition === 1) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -389,7 +389,7 @@ export class BoardComponent implements OnInit {
     setTimeout(() => {
       this.startCountdown = false;
       this.startOverlay = false;
-      //user jatekter inicializalasa nullakkal
+      //ures jatekter inicializalasa nullakkal
       this.childCountdown.start();
       this.board = this.getEmptyBoard();
       this.direction = Math.floor(Math.random() * 2);
@@ -526,6 +526,16 @@ export class BoardComponent implements OnInit {
 
   setLevel(string){
     this.level = Math.floor(string);
-    console.log(this.level);
+  }
+
+  receiveDataFromChild(args){
+    this.isLoggedIn = args;
+  }
+
+  isClickedEvent(args){
+    if(this.isLoggedIn && args){
+      this.isCookieVisible = false;
+      this.showStartingGuide = false;
+    }
   }
 }

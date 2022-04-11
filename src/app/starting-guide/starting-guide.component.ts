@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations'
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'starting-guide',
@@ -10,9 +11,14 @@ export class StartingGuideComponent implements OnInit {
   @Input() showStartingGuide: boolean; 
   @Output() showStartingGuideChange = new EventEmitter<boolean>();
   
-  constructor() { }
+  constructor(private cookieService: CookieService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const userCookie = this.cookieService.get('permissionGranted');
+    if(userCookie){
+      this.changeStartingGuide();
+    }
+  }
 
   changeStartingGuide(): void {
     this.showStartingGuideChange.emit(false);
