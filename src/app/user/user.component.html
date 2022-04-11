@@ -2,8 +2,8 @@
     <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen || isGameStarted}">{{isLoggedIn ? 'Profil': 'Bejelentkezés'}}</button>
     <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen || isRegistering || isLoggingIn}">Vissza</button>
 </span>
-<button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
+    <button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
     <button class="profile-button back-button editing-back" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza</button>
     <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza</button>
     <h1 [ngClass]="{'invisible': isLoggedIn}">Profil</h1>
@@ -125,7 +125,7 @@
     <button class="button" [ngClass]="{'invisible': !isLoggingIn}" (click)="isLoggingIn = false; clearForm()">Vissza</button>
     <div class="profile-info" [ngClass]="{'invisible': !isLoggedIn}">
         <div class="info-container" [ngClass]="{'invisible': isEditing || isFollowing}">
-            <h1 style="margin-top:15%">Üdvözlöm, <span class="greeting">{{user?.name || 'Felhasználó'}}</span></h1>
+            <h1 style="margin-top:5%">Üdvözlöm, <span class="greeting">{{user?.name || 'Felhasználó'}}</span></h1>
 
             <ul class="profile-menu">
                 <li (click)="isFollowing=true">Követett felhasználók</li>

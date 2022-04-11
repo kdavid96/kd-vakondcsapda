@@ -202,7 +202,7 @@ export class BoardComponent implements OnInit {
       this.otherButton = true;
       //0 = fent, 1 = lent, 2 = bal, 3 = jobb
       // 38 = fent, 40 = lent, 37 = bal, 39 = jobb
-      if(e.keyCode === 37 || e.which === 37){
+      if(e.key === 'ArrowLeft' || e.keyCode === 37 || e.which === 37){
         this.otherButton = false;
         if(this.molePosition === 2) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -218,7 +218,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 38 || e.which === 38){
+      if(e.key === 'ArrowUp' || e.keyCode === 38 || e.which === 38){
         this.otherButton = false;
         if(this.molePosition === 0) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -234,7 +234,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 39 || e.which === 39){
+      if(e.key === 'ArrowRight' || e.keyCode === 39 || e.which === 39){
         this.otherButton = false;
         if(this.molePosition === 3) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
@@ -250,7 +250,7 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 40 || e.which === 40){
+      if(e.key === 'ArrowDown' || e.keyCode === 40 || e.which === 40){
         this.otherButton = false;
         if(this.molePosition === 1) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));

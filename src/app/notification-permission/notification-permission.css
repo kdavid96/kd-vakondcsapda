@@ -12,6 +12,7 @@ button {
     cursor: pointer;
     bottom: 2%;
     overflow-y: none;
+    word-break: break-all;
 }
 
 button:active{
@@ -25,5 +26,12 @@ button:active{
     }
     100%{
         bottom: 2%;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    button{
+        font-size: .7em;
+        width: 60%;
     }
 }

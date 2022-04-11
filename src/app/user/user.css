@@ -21,8 +21,8 @@
 
 .profile-icon{
     position: fixed;
-    left: 15px;
-    top: 10px;
+    left: 5%;
+    top: 2%;
     display: inline-block;
     width: 60px;
     height: 34px;
@@ -121,10 +121,11 @@ form > div > select {
 
 .sign-out-button{
     position: fixed;
-    right: 15px;
-    top: 12px;
+    right: 5%;
+    top: 2%;
     display: inline-block;
     z-index: 17;
+    padding: 16px;
 }
 
 .transparent{
@@ -251,7 +252,6 @@ input[type=radio]:checked ~ label {
 }
 
 .stats {
-    margin-top: 5%;
     background: #21252d;
     height: 45%;
     border-radius: 10px;
@@ -277,6 +277,7 @@ input[type=radio]:checked ~ label {
 .stats-list > li {
     color: white;
     list-style-type: none;
+    font-size: min(3vw, 35px);
 }
 
 .back-button {
@@ -304,4 +305,27 @@ input[type=radio]:checked ~ label {
     left: 40%;
     position: relative;
     bottom: -94%;
+}
+
+h1 {
+    font-size: 5vw;
+}
+  
+@media screen and (max-width: 600px) {
+    form > div {
+        flex-direction: column;
+    }
+    
+    form > div > label {
+        margin-bottom: 15px;
+    }
+
+    .stats-list {
+        margin-inline: 15px;
+    }
+
+    .option-list {
+        display: flex;
+        flex-direction: row;
+    }
 }

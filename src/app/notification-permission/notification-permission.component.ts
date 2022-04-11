@@ -10,7 +10,7 @@ import { MessagingService } from 'src/app/shared/messaging.service';
   selector: 'notification-permission',
   template: `
   <button (click)="requestPermission()" [ngStyle]="{'display': isClicked ? 'none' : 'block'}" class="noti-button">
-    Értesítések engedélyezése
+    Értesítések<br/>engedélyezése
   </button>
   `,
   styleUrls: ['notification-permission.css']

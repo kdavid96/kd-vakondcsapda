@@ -1,17 +1,19 @@
-.content{
-  height: 100%;
+.content {
+  height: 92%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+  top: 8%;
 }
 
 .switch {
   position: fixed;
-  right: 100px;
-  top: 20px;
+  right: 10%;
+  top: 2%;
   display: inline-block;
   width: 60px;
   height: 34px;

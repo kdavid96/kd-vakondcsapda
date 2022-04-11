@@ -303,3 +303,16 @@ input[type=radio]:checked ~ label {
 form > div {
     margin-bottom: 15px;
 }
+
+@media screen and (max-width: 600px) {
+    form > div {
+        flex-direction: column;
+    }
+
+    .option-list {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        overflow: scroll;
+    }
+}

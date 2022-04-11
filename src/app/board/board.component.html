@@ -83,7 +83,7 @@
       </div>
     </div>
   </div>
-    <div class="row" [ngClass]="{'invisible': isLandscape}">
+    <div class="row" [ngClass]="{'invisible': isLandscape || !started}">
       <canvas #board class="game-board" id="board">A böngésző nem támogatja a canvas elemet :(</canvas>
       <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>
