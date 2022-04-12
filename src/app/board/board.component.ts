@@ -49,7 +49,7 @@ export class BoardComponent implements OnInit {
   yPos: any;
   offsetX: any;
   offsetY: any;
-  isLandscape: boolean;
+  isLandscape: boolean = true;
   isProfileOverlayOpen: boolean = false;
   tapSound: any;
   loggedInUser: any = null;
@@ -65,11 +65,12 @@ export class BoardComponent implements OnInit {
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
     let orientation = screen.orientation.type;
+    console.log(orientation);
     if(this.isTouchEnabled()){
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
         this.isLandscape = true;
       } else {
-        this.isLandscape = false;
+        this.isLandscape = true;
       }
       this.setUpTouch();
     }
@@ -79,12 +80,13 @@ export class BoardComponent implements OnInit {
     this.tapSound = new Audio("../../assets/tap.m4a");
     this.initBoard();
     let orientation = screen.orientation.type;
+    console.log(orientation);
 
     if(this.isTouchEnabled()){
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
         this.isLandscape = true;
       } else {
-        this.isLandscape = false;
+        this.isLandscape = true;
       }
       this.setUpTouch();
     }else{

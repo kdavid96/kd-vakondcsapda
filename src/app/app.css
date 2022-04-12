@@ -7,18 +7,16 @@
   align-items: center;
   text-align: center;
   position: relative;
-  top: 8%;
 }
 
 .switch {
-  position: fixed;
-  right: 10%;
-  top: 2%;
+  position: relative;
+  left: 85%;
+  top: 30%;
   display: inline-block;
   width: 60px;
   height: 34px;
   z-index: 5;
-  box-shadow: #22262e;
 }
 
 .switch input {
@@ -83,7 +81,7 @@
 }
 
 .solar{
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 8%;
   overflow: hidden;
@@ -148,5 +146,11 @@
   100% {
     opacity: 0;
     transform: translateY(250px);
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .switch{
+    left: 75%;
   }
 }

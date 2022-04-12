@@ -4,8 +4,8 @@
 </span>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
     <button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
-    <button class="profile-button back-button editing-back" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza</button>
-    <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza</button>
+    <button class="profile-button back-button editing-back" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza a profilra</button>
+    <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza a profilra</button>
     <h1 [ngClass]="{'invisible': isLoggedIn}">Profil</h1>
     <ul class="profile-list" [ngClass]="{'invisible': isRegistering || isLoggingIn || isLoggedIn}">
         <li class="profile-list-items" (click)="isRegistering = true">Regisztráció</li>

@@ -9,7 +9,7 @@
     <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics && !tables}">
       <starting-guide [(showStartingGuide)]="showStartingGuide" [ngClass]="{'invisible': !showStartingGuide}"></starting-guide>
       <div [ngClass]="{'invisible': dataProtection || statistics || tables, 'flex-column overlay': !started && !dataProtection && !statistics && !tables, 'started-row': started && !dataProtection && !statistics && !tables}">
-        <h1 class="title" [ngClass]="{'invisible': started || isLandscape}">
+        <h1 class="title" [ngClass]="{'invisible': started}">
           <span>V</span>
           <span>a</span>
           <span>k</span>
@@ -23,7 +23,7 @@
           <span>d</span>
           <span>a</span>
         </h1>
-        <div class="game-data" [ngClass]="{'invisible': startOverlay || isLandscape}">
+        <div class="game-data" [ngClass]="{'invisible': startOverlay}">
           <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()" [duration]="level"></countdown>
           <ul class="data-list">
             <p>Score: {{ points }}</p>
@@ -31,10 +31,7 @@
             <p>Level: {{ level }}</p> 
           </ul>
         </div>
-        <div [ngClass]="{'invisible': !isLandscape}">
-          <p>Az alkalmazás csak álló módban, valamint nagyméretű kijelzőn működik megfelelően.<br/> Kérem tartsa ennek megfelelően a készülékét!</p>
-        </div>
-        <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen || started}" class="side-toggle-container">
+        <div [ngClass]="{'invisible':isProfileOverlayOpen || started}" class="side-toggle-container">
           <div class="side-toggle three-switch">
                 <span class="side-toggle-label">Nehézségi szint:</span>
                 <span type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">I</label></span>
@@ -49,7 +46,7 @@
             <span type="radio" id="radio-one" class="level-button" (click)="setLevel('8')"><label [ngStyle]="{'background': level===8 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2m</label></span>
           </div>
         </div>
-        <div [ngClass]="{'invisible': isLandscape || isProfileOverlayOpen}" class="button-container">
+        <div [ngClass]="{'invisible': isProfileOverlayOpen}" class="button-container">
           <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
           <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
@@ -72,7 +69,7 @@
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}" style="height: 100%">
         <div class="game-data" style="padding: 35px; min-height: 80%;">
-          <statistics style="width: 80%;"></statistics>
+          <statistics style="width: 80%; position: relative; height: 100%;"></statistics>
           <button (click)="statistics = false" class="play-button">Vissza</button>
         </div>
       </div>
@@ -83,7 +80,7 @@
       </div>
     </div>
   </div>
-    <div class="row" [ngClass]="{'invisible': isLandscape || !started}">
+    <div class="row" [ngClass]="{'invisible': !started}">
       <canvas #board class="game-board" id="board">A böngésző nem támogatja a canvas elemet :(</canvas>
       <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>

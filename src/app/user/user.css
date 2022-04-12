@@ -21,8 +21,8 @@
 
 .profile-icon{
     position: fixed;
-    left: 5%;
-    top: 2%;
+    left: 15px;
+    top: 10px;
     display: inline-block;
     width: 60px;
     height: 34px;
@@ -277,7 +277,6 @@ input[type=radio]:checked ~ label {
 .stats-list > li {
     color: white;
     list-style-type: none;
-    font-size: min(3vw, 35px);
 }
 
 .back-button {
@@ -302,9 +301,9 @@ input[type=radio]:checked ~ label {
 }
 
 .editing-back{
-    left: 40%;
     position: relative;
-    bottom: -94%;
+    bottom: -105%;
+    left: 0%;
 }
 
 h1 {

@@ -377,7 +377,7 @@ button:hover{
     flex-direction: row;
     height: 25%;
     width: 100%;
-    bottom: 55px;
+    bottom: 15px;
     left: 0;
     top: auto;
     max-width: 100%;
@@ -418,7 +418,6 @@ button:hover{
     width: 103%;
     margin: 10px;
     max-width: 103%;
-    height: 103%;
   }
   
   .flex-column{
@@ -497,7 +496,7 @@ button:hover{
     flex-direction: column;
     width: 100%;
     height: fit-content;
-    top: 70%;
+    bottom: 15px;
   }
 
   .side-toggle{
