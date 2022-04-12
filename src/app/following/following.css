@@ -1,0 +1,50 @@
+.following-list, .to-follow-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    margin-top: 10%;
+}
+
+.following-list > li, .to-follow-list > li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.following-list > li > span, .to-follow-list > li > span {
+    color:#538bff;
+}
+
+.button-container-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.button-container-inline > button {
+    max-width: 150px;
+    font-size: .6rem;
+    padding: 10px;
+}
+
+.button-container-inline > button:nth-of-type(2):focus {
+    background: rgb(167, 38, 21);
+}
+
+.profile-button {
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+}
+
+.to-follow-list > li {
+    width: 100%;
+}

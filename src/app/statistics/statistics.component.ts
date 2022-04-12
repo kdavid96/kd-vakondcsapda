@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
 import { Chart, BarElement, BarController, CategoryScale, Decimation, Filler, Legend, Title, Tooltip, LinearScale} from 'chart.js';
-
+import { map } from 'rxjs';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'statistics',
@@ -17,9 +18,11 @@ export class StatisticsComponent implements OnInit {
   canvas: HTMLCanvasElement;
   ctxChart: any;
   myChart: Chart;
+  userList: any;
 
-  constructor(private reactionTimeService: ReactionTimeServiceService) {
+  constructor(private reactionTimeService: ReactionTimeServiceService, private authService: AuthService) {
     Chart.register(BarElement, BarController, CategoryScale, Decimation, Filler, Legend, Title, Tooltip, LinearScale);
+    this.authService.getUserList().subscribe(userList => this.userList = userList, this.getResults());
   }
 
   ngOnInit(): void {
@@ -27,15 +30,30 @@ export class StatisticsComponent implements OnInit {
     this.canvas.style.width = "100%";
     this.canvas.style.height = "100%";
     this.ctxChart = this.canvas.getContext('2d');
+    this.destroy();
+    this.loadHitsPerSecondsChart();
+  }
+
+  getResults(): any{
+    this.reactionTimeService.getReactionTimeResultsRealtime().snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c =>
+          //@ts-ignore
+          ({ key: c.payload.key, ...c.payload.val() })
+        )
+      )
+    ).subscribe(data => {
+      let localArray:any;
+      if(this.userList){
+        this.resultsArray = data.map(game => ({'id': game.id, 'difficulty': game.difficulty, 'date': game.date,'sum': Math.ceil(game.data?.map(data => data.miliseconds).reduce((a,b) => a+b)/1000), 'hits': game.data?.filter(a => a.hit ).length, 'misses': game.data?.filter(a => !a.hit).length, 'points': game.points}));
+        this.resultsArray.forEach((data,index) => {
+          this.resultsArray[index].id = this.userList.filter(user => user.data.uid === data.id)[0].data.username;
+        })
+      }
+    });
   }
 
   loadHitsPerSecondsChart() {
-    this.reactionTimeService.getReactionTimeResults().subscribe(result => {
-      this.resultsArray = result.map(res => res.data.map(data => data.miliseconds));
-      this.resultsArray = this.resultsArray.map(res => res.reduce((a,b) => a+b));
-      this.resultsArray = this.resultsArray.map((res, index) => ({sum: res, length: result[index].data.length}));
-      this.resultsArray = this.resultsArray.map((res, index) => ({...res, hits: result[index].data.filter(a => a.hit ).length}))
-    })
     const colors = this.resultsArray.map(res => this.generateRandomColor());
     const borderColors = colors.map(color => color);
     this.myChart = new Chart(this.ctxChart, {
@@ -43,7 +61,7 @@ export class StatisticsComponent implements OnInit {
         data: {
             labels: this.resultsArray.map(res => res.sum),
             datasets: [{
-                label: '# of hits/sec',
+                label: 'találat/mp',
                 data: this.resultsArray.map(res => (res.sum/1000)/res.hits),
                 backgroundColor: colors,
                 borderColor: borderColors,
@@ -60,13 +78,7 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  loadHitsPerGameChart() {
-    this.reactionTimeService.getReactionTimeResults().subscribe(result => {
-      this.resultsArray = result.map(res => res.data.map(data => data.miliseconds));
-      this.resultsArray = this.resultsArray.map(res => res.reduce((a,b) => a+b));
-      this.resultsArray = this.resultsArray.map((res, index) => ({sum: res, length: result[index].data.length}));
-      this.resultsArray = this.resultsArray.map((res, index) => ({...res, hits: result[index].data.filter(a => a.hit ).length}))
-    })
+  loadHitsPerGameChart() {    
     const colors = this.resultsArray.map(res => this.generateRandomColor());
     const borderColors = colors.map(color => color);
     this.myChart = new Chart(this.ctxChart, {
@@ -74,7 +86,7 @@ export class StatisticsComponent implements OnInit {
         data: {
             labels: this.resultsArray.map(res => res.sum),
             datasets: [{
-                label: '# of hits/game',
+                label: 'találat/játék',
                 data: this.resultsArray.map(res => res.hits),
                 backgroundColor: colors,
                 borderColor: borderColors,

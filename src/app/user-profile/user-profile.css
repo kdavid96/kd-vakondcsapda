@@ -1,0 +1,31 @@
+.profile{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button-container-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    width: 250px;
+    justify-content: center;
+}
+
+.button-container-inline > button {
+    max-width: 250px;
+    font-size: .6rem;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.button-container-inline > button:nth-of-type(2):focus {
+    background: rgb(167, 38, 21);
+}
+
+.following{
+    border: none;
+    color: white;
+    background-color: #538bff;
+}

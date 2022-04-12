@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { interval } from 'rxjs';
 
 @Component({
@@ -10,6 +10,7 @@ export class CountdownComponent implements OnInit {
   miliseconds = 0;
   @Output() outputTime = new EventEmitter();
   @Output() stop = new EventEmitter();
+  @Input() duration = 0;
   startTime;
   endTime;
   obs;
@@ -19,19 +20,20 @@ export class CountdownComponent implements OnInit {
 
 
   start(): void {
-    this.endTime = new Date();
-    this.endTime.setSeconds(this.endTime.getSeconds() + 30);
+    //this.endTime = new Date();
+    this.endTime = performance.now();
+    this.endTime += (this.duration*15)*1000;
     var timeDiff;
     const obs$ = interval(10);
     this.obs = obs$.subscribe((d) => {
-      this.startTime = new Date();
+      this.startTime = performance.now();
       timeDiff = this.endTime - this.startTime;
       if(-15 < timeDiff && timeDiff < 15){
         this.childStop();
         this.stop.emit();
       }
       timeDiff /= 1000;
-      this.miliseconds = (this.endTime - this.startTime);  
+      this.miliseconds = (this.endTime - this.startTime);
       this.outputTime.emit({miliseconds: this.miliseconds});
     })
   }

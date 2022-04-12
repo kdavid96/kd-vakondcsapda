@@ -1,0 +1,16 @@
+<div class="profile">
+        {{user?.data?.name}}
+    <div *ngIf="isFollowing; then unfollowButton else followButton">
+        placeholder
+    </div>
+</div>
+<ng-template #followButton>
+    <div class="button-container-inline">
+        <button (click)="toggleFollow()">Követés</button>
+    </div>
+</ng-template>
+<ng-template #unfollowButton>
+    <div class="button-container-inline">
+        <button class="following" (click)="toggleFollow()">Követés megszűntetése</button>
+    </div>
+</ng-template>

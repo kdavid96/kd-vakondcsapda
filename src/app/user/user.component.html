@@ -1,7 +1,151 @@
-<span class="profile-icon" (click)="isProfileOverlayOpen = !isProfileOverlayOpen">
-    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen}">Profile</button>
-    <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen}">Back</button>
+<span class="profile-icon" [ngClass]="{'invisible': isStartingGuideOpen}" (click)="isProfileOverlayOpen = !isProfileOverlayOpen; clearForm(); sendDataToParent()">
+    <button class="profile-button" [ngClass]="{'invisible': isProfileOverlayOpen || isGameStarted}">{{isLoggedIn ? 'Profil': 'Bejelentkezés'}}</button>
+    <button class="profile-button" [ngClass]="{'invisible': !isProfileOverlayOpen || isRegistering || isLoggingIn}">Vissza</button>
 </span>
 <div class="profileOverlay" [ngClass]="{'invisible': !isProfileOverlayOpen}">
-    THIS IS MY PROFILE
+    <button class="profile-button sign-out-button" (click)="signOut();" [ngClass]="{'invisible': !isLoggedIn}">Kijelentkezés</button>
+    <button class="profile-button back-button editing-back" (click)="isEditing=false" [ngClass]="{'invisible': !isEditing}">Vissza a profilra</button>
+    <button class="profile-button back-button" (click)="isFollowing=false" [ngClass]="{'invisible': !isFollowing}">Vissza a profilra</button>
+    <h1 [ngClass]="{'invisible': isLoggedIn}">Profil</h1>
+    <ul class="profile-list" [ngClass]="{'invisible': isRegistering || isLoggingIn || isLoggedIn}">
+        <li class="profile-list-items" (click)="isRegistering = true">Regisztráció</li>
+        <li class="profile-list-items" (click)="isLoggingIn = true">Bejelentkezés</li>
+    </ul>
+    <form [formGroup]="registerForm" [ngClass]="{'invisible': !isRegistering || isLoggedIn}" (ngSubmit)="onSubmitRegister()">
+        <div>
+            <label for="username">
+                Felhasználónév:
+            </label>
+            <input type="text" placeholder="" id="username" formControlName="username">
+        </div>
+        <div>
+            <label for="email">
+                Email:
+            </label>
+            <input type="text" placeholder="" id="email" formControlName="email">
+        </div>
+        <div>
+            <label for="password">
+                Jelszó:
+            </label>
+            <input type="password" placeholder="" id="password" formControlName="password">
+        </div>
+        <div>
+            <label for="passwordRe">
+                Jelszó újra:
+            </label>
+            <input type="password" placeholder="" id="passwordRe" formControlName="passwordRe">
+        </div>
+        <div>
+            <label for="name">
+                Név:
+            </label>
+            <input type="text" placeholder="" id="name" formControlName="name">
+        </div>
+        <div>
+            <label for="ageGroup">
+                Korcsoport:
+            </label>
+            <select formControlName="ageGroup" id="ageGroup">
+                <option value="">Válasszon korcsoportot...</option>
+                <option *ngFor="let age of ageGroups" [ngValue]="age">
+                    {{ age }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="education">
+                Végzettség:
+            </label>
+            <select formControlName="education" id="education">
+                <option value="">Válasszon végzettségi szintet...</option>
+                <option *ngFor="let education of educationList" [ngValue]="education">
+                    {{ education }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="gender">
+                Nem:
+            </label>  
+            <div class="gender-select">
+
+                <ul class="option-list">
+                    <li>
+                        <input type="radio" id="f-option" name="gender" value="female" formControlName="gender" >
+                        <label for="f-option">Nő</label>
+                        
+                        <div class="check"></div>
+                    </li>
+                    
+                    <li>
+                        <input type="radio" id="s-option" name="gender" value="male" formControlName="gender" >
+                        <label for="s-option">Férfi</label>
+                        
+                        <div class="check"><div class="inside"></div></div>
+                    </li>
+                    
+                    <li>
+                        <input type="radio" id="t-option" name="gender" value="other" formControlName="gender" >
+                        <label for="t-option">Egyéb</label>
+                        
+                        <div class="check"><div class="inside"></div></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="button" (click)="sendDataToParent()" type="submit">Regisztráció</button>
+        </div>
+        <div class="error" [ngClass]="{'invisible': !error}">
+            <span style="color: red">{{errorMessage}}</span>
+        </div>
+    </form>
+    <button class="button" [ngClass]="{'invisible': !isRegistering}" (click)="isRegistering = false; clearForm()">Vissza</button>
+    <form [formGroup]="loginForm" [ngClass]="{'invisible': !isLoggingIn || isLoggedIn}" (ngSubmit)="onSubmitLogin()">
+        <div>
+            <label for="emailLogin">
+                Felhasználónév:
+            </label>
+            <input type="text" placeholder="" id="emailLogin" formControlName="emailLogin">
+        </div>
+        <div>
+            <label for="passwordLogin">
+                Jelszó:
+            </label>
+            <input type="password" placeholder="" id="passwordLogin" formControlName="passwordLogin">
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit" (click)="sendDataToParent()" [ngStyle]="{'background': 'rgb(3, 54, 108)'}">Bejelentkezés</button>
+        </div>
+        <div class="error" [ngClass]="{'transparent': !error}">
+            <span style="color: red" [ngClass]="{'transparent': !error}">{{errorMessage}}</span>
+        </div>
+    </form>
+    <button class="button" [ngClass]="{'invisible': !isLoggingIn}" (click)="isLoggingIn = false; clearForm()">Vissza</button>
+    <div class="profile-info" [ngClass]="{'invisible': !isLoggedIn}">
+        <div class="info-container" [ngClass]="{'invisible': isEditing || isFollowing}">
+            <h1 style="margin-top:5%">Üdvözlöm, <span class="greeting">{{user?.name || 'Felhasználó'}}</span></h1>
+
+            <ul class="profile-menu">
+                <li (click)="isFollowing=true">Követett felhasználók</li>
+                <li (click)="isEditing=true">Felhasználói fiók szerkesztése</li>
+            </ul>
+
+            <div class="stats" [ngClass]="{'invisible': isFollowing || isEditing}">
+                <h4 class="stats-title">Saját statisztikák</h4>
+                <ul class="stats-list">
+                    <li>Összes játszott menet: {{playedGames}}</li>
+                    <li>Átlagos köridő: {{avgTimePlayed}} mp</li>
+                    <li>Legjobb eredmény: {{bestScore}} pont</li>
+                    <li>Átlagos eredmény: {{avgScore}} pont</li>
+                </ul>
+            </div>
+        </div>
+        <div [ngClass]="{'invisible': !isFollowing}">
+            <h1 style="margin-bottom: 15%">Felhasználók</h1>
+            <following [user]="user$"></following>
+        </div>
+        <edit-profile [ngClass]="{'invisible': !isEditing}"></edit-profile>
+    </div>
 </div>

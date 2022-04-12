@@ -1,0 +1,92 @@
+<h1 style="  margin-bottom: min(15%, 25px);font-size: min(7vw, 35px);">Profil szerkesztése</h1>
+
+<form [formGroup]="editForm" (ngSubmit)="saveData()">
+    <div>
+        <label for="usernameEdit">
+            Felhasználónév:
+        </label>
+        <input type="text" placeholder="" id="usernameEdit" formControlName="usernameEdit">
+    </div>
+    <div>
+        <label for="emailEdit">
+            Email:
+        </label>
+        <input type="text" placeholder="" id="emailEdit" formControlName="emailEdit">
+    </div>
+    <div>
+        <label for="passwordEdit">
+            Jelszó:
+        </label>
+        <input type="password" placeholder="" id="passwordEdit" formControlName="passwordEdit">
+    </div>
+    <div>
+        <label for="passwordReEdit">
+            Jelszó újra:
+        </label>
+        <input type="password" placeholder="" id="passwordReEdit" formControlName="passwordReEdit">
+    </div>
+    <div>
+        <label for="nameEdit">
+            Név:
+        </label>
+        <input type="text" placeholder="" id="nameEdit" formControlName="nameEdit">
+    </div>
+    <div>
+        <label for="ageGroupEdit">
+            Korcsoport:
+        </label>
+        <select formControlName="ageGroupEdit" id="ageGroupEdit">
+            <option value="">Válasszon korcsoportot...</option>
+            <option *ngFor="let age of ageGroups" [ngValue]="age">
+                {{ age }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="educationEdit">
+            Végzettség:
+        </label>
+        <select formControlName="educationEdit" id="educationEdit">
+            <option value="">Válasszon végzettségi szintet...</option>
+            <option *ngFor="let education of educationList" [ngValue]="education">
+                {{ education }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="genderEdit">
+            Nem:
+        </label>  
+        <div class="gender-select">
+
+            <ul class="option-list">
+                <li>
+                    <input type="radio" id="n-option" name="genderEdit" value="female" formControlName="genderEdit" >
+                    <label for="n-option">Nő</label>
+                    
+                    <div class="check"></div>
+                </li>
+                
+                <li>
+                    <input type="radio" id="ff-option" name="genderEdit" value="male" formControlName="genderEdit" >
+                    <label for="ff-option">Férfi</label>
+                    
+                    <div class="check"><div class="inside"></div></div>
+                </li>
+                
+                <li>
+                    <input type="radio" id="o-option" name="genderEdit" value="other" formControlName="genderEdit" >
+                    <label for="o-option">Egyéb</label>
+                    
+                    <div class="check"><div class="inside"></div></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="button" (click)="saveData()" type="submit">Mentés</button>
+    </div>
+    <div class="error" [ngClass]="{'invisible': !error}">
+        <span style="color: red">{{errorMessage}}</span>
+    </div>
+</form>

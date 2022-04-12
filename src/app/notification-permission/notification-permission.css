@@ -1,0 +1,37 @@
+button {
+    padding: 15px;
+    z-index: 25;
+    position: relative;
+    width: 40%;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-in-out;
+    background: rgb(239,239,239);;
+    color: #538bff;
+    border-radius: 25px;
+    border: 2px solid #538bff;
+    cursor: pointer;
+    bottom: 2%;
+    overflow-y: none;
+    word-break: break-all;
+}
+
+button:active{
+    background-color: #538bff;
+    color: white;
+}
+
+@keyframes fadeIn {
+    0%{
+        bottom: -100%;
+    }
+    100%{
+        bottom: 2%;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    button{
+        font-size: .7em;
+        width: 60%;
+    }
+}

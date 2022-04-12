@@ -25,3 +25,31 @@
 .chart-container{
     padding: 10%;
 }
+
+.chart-selector-small{
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-selector-small li{
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+    background-color: azure;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: #1c0d0d 3px 3px 3px;
+    margin: 10px;
+}
+
+@media screen and (max-width: 650px) {
+    .chart-selector{
+        display: none;
+    }
+
+    .chart-selector-small{
+        display: flex;
+    }
+}

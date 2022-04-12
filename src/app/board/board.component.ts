@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, HostListener, Input } from '@angular/core';
 import { COLS, ROWS, BLOCK_SIZE} from '../constants';
 import { CountdownComponent } from '../countdown/countdown.component';
-import { TimelineComponent } from '../timeline/timeline.component';
 import { StatisticsComponent } from '../statistics/statistics.component';
+import { TablesComponent } from '../tables/tables.component';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
 import { Square } from './square';
 
@@ -37,11 +37,11 @@ export class BoardComponent implements OnInit {
   started: boolean = false;
   dataProtection: boolean = false;
   statistics: boolean = false;
+  tables: boolean = false;
   molePosition: number = 0;
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
-  showStartingGuide: boolean = false;
   beginningCountdown: HTMLElement;
   count: number = 3;
   timer: any;
@@ -49,17 +49,56 @@ export class BoardComponent implements OnInit {
   yPos: any;
   offsetX: any;
   offsetY: any;
+  isLandscape: boolean = true;
+  isProfileOverlayOpen: boolean = false;
+  tapSound: any;
+  loggedInUser: any = null;
+  isLoggedIn: boolean = false;
+  difficulty: string = "easy";
+  isCookieVisible: boolean = true;
+  showStartingGuide: boolean = this.isLoggedIn ? true : false;
 
-  constructor(private reactionTimeService: ReactionTimeServiceService) {}
+  constructor(private reactionTimeService: ReactionTimeServiceService) {
+    this.loggedInUser = JSON.parse(localStorage.getItem('user'));
+  }
+
+  @HostListener('window:orientationchange', ['$event'])
+  onOrientationChange(event) {
+    let orientation = screen.orientation.type;
+    console.log(orientation);
+    if(this.isTouchEnabled()){
+      if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
+        this.isLandscape = true;
+      } else {
+        this.isLandscape = true;
+      }
+      this.setUpTouch();
+    }
+  }
 
   ngOnInit(): void {
+    this.tapSound = new Audio("../../assets/tap.m4a");
     this.initBoard();
+    let orientation = screen.orientation.type;
+    console.log(orientation);
+
     if(this.isTouchEnabled()){
-      console.log("VAN TOUCHSCREEN");
+      if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
+        this.isLandscape = true;
+      } else {
+        this.isLandscape = true;
+      }
       this.setUpTouch();
     }else{
-      console.log("NINCS TOUCH SCREEN");
       document.addEventListener('keydown', this.logKey);
+    }
+
+    const letters = document.querySelectorAll('span');
+    let filteredLetters = [];
+    for(let i = 0; i < letters.length; i++){
+      if(letters[i].className == 'title-character'){
+        filteredLetters.push(letters[i]);
+      }
     }
   }
 
@@ -165,13 +204,14 @@ export class BoardComponent implements OnInit {
       this.otherButton = true;
       //0 = fent, 1 = lent, 2 = bal, 3 = jobb
       // 38 = fent, 40 = lent, 37 = bal, 39 = jobb
-      if(e.keyCode === 37){
+      if(e.key === 'ArrowLeft' || e.keyCode === 37 || e.which === 37){
         this.otherButton = false;
         if(this.molePosition === 2) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -180,13 +220,14 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 38){
+      if(e.key === 'ArrowUp' || e.keyCode === 38 || e.which === 38){
         this.otherButton = false;
         if(this.molePosition === 0) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -195,13 +236,14 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 39){
+      if(e.key === 'ArrowRight' || e.keyCode === 39 || e.which === 39){
         this.otherButton = false;
         if(this.molePosition === 3) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
           this.reactionTimes = this.reactionTimes.slice();
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -210,13 +252,14 @@ export class BoardComponent implements OnInit {
           this.blinkRed();
         }
       }
-      if(e.keyCode === 40){
+      if(e.key === 'ArrowDown' || e.keyCode === 40 || e.which === 40){
         this.otherButton = false;
         if(this.molePosition === 1) {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, true));
           this.reactionTimes = this.reactionTimes.slice();  
           this.points++;
           this.moles++;
+          this.tapSound.play();
           this.blinkGreen();
         } else {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
@@ -234,10 +277,10 @@ export class BoardComponent implements OnInit {
 
   timeSpent(miliseconds, hit) {
     if(this.reactionTimes.length === 0){
-      return {miliseconds: 30000 - miliseconds, hit: hit}
+      return {miliseconds: (this.level*15) - miliseconds, hit: hit}
     } else {
       let tempMiliseconds = this.reactionTimes.reduce((partialSum, a) => partialSum + a.miliseconds, 0);
-      return {miliseconds: 30000 - tempMiliseconds - miliseconds, hit}
+      return {miliseconds: (this.level*15) - tempMiliseconds - miliseconds, hit}
     }
   }
 
@@ -348,14 +391,13 @@ export class BoardComponent implements OnInit {
     setTimeout(() => {
       this.startCountdown = false;
       this.startOverlay = false;
-      //user jatekter inicializalasa nullakkal
+      //ures jatekter inicializalasa nullakkal
       this.childCountdown.start();
       this.board = this.getEmptyBoard();
       this.direction = Math.floor(Math.random() * 2);
       this.roadPlace = Math.floor(Math.random() * 9) + 1;
       this.roadCoordinate = (this.roadPlace+1) * BLOCK_SIZE;
 
-      console.log('roadCoordinate: ', this.roadCoordinate);
       var x,y;
       [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
       new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
@@ -380,9 +422,13 @@ export class BoardComponent implements OnInit {
     this.roadCoordinate = this.roadPlace * BLOCK_SIZE;
 
     var x,y;
-    [x,y] = this.generateMolePosition(this.roadPlace,this.direction);
+    let coordinateArray = [];
 
-    new Square(this.ctx).draw(x,y,this.roadPlace,this.direction);
+    switch(this.difficulty){
+      case 'easy': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); new Square(this.ctx).draw(x,y,this.roadPlace,this.direction); break;
+      case 'medium': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); coordinateArray.reverse(); new Square(this.ctx).drawMultiple(2,coordinateArray,this.roadPlace,this.direction);break;
+      case 'hard': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.reverse(); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(3,coordinateArray,this.roadPlace,this.direction);break;
+    }  
 
     this.squares.forEach((square, index) => {
       setTimeout(this.drawEverything,index * 1000, square, index, index, this.roadPlace, this.direction)
@@ -418,8 +464,6 @@ export class BoardComponent implements OnInit {
 
     //0 = fent, 1 = lent, 2 = bal, 3 = jobb
     
-    //TODO: VALAMIERT HA 10 A KOORDINATA, 0-RA RENDERELI ES IGY NYILVAN SZAR A TALALAT
-
     if(direction){
       if(y > roadPlace) this.molePosition = 1; else this.molePosition = 0;
       if(y === 10) this.molePosition = 0;
@@ -465,8 +509,9 @@ export class BoardComponent implements OnInit {
   }
 
   stop() {
-    console.log(this.reactionTimes);
-    this.reactionTimeService.createReactionTimeResult(this.reactionTimes);
+    let user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : {data: {uid: 'noid'}};
+    console.log(user.data);
+    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty, this.points);
     this.reactionTimes = [];
     this.setWhite();
     this.childCountdown.childStop();
@@ -475,5 +520,24 @@ export class BoardComponent implements OnInit {
 
   loadCharts() {
     this.childStatistics.loadHitsPerSecondsChart();
+  }
+
+  setDifficulty(string){
+    this.difficulty = string;
+  }
+
+  setLevel(string){
+    this.level = Math.floor(string);
+  }
+
+  receiveDataFromChild(args){
+    this.isLoggedIn = args;
+  }
+
+  isClickedEvent(args){
+    if(this.isLoggedIn && args){
+      this.isCookieVisible = false;
+      this.showStartingGuide = false;
+    }
   }
 }

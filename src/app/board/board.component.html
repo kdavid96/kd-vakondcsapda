@@ -1,44 +1,87 @@
 <div class="container">
   <div class="flex-row">
     <img src="../../assets/mole_trp_smol.png" id="mole" style="display: none;"/>
+    <img src="../../assets/mole_trp_smol_v2.png" id="mole_v2" style="display: none;"/>
+    <img src="../../assets/mole_trp_smol_v3.png" id="mole_v3" style="display: none;"/>
     <img src="../../assets/grass.png" id="grass" style="display: none;"/>
     <img src="../../assets/road.png" id="road" style="display: none;"/>
     <img src="../../assets/house.png" id="house" style="display: none;"/>
-    <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics}">
+    <div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics && !tables}">
       <starting-guide [(showStartingGuide)]="showStartingGuide" [ngClass]="{'invisible': !showStartingGuide}"></starting-guide>
-      <div [ngClass]="{'invisible': dataProtection || statistics, 'flex-column overlay': !started && !dataProtection && !statistics, 'started-row': started && !dataProtection && !statistics}">
-        <h1 class="title" [ngClass]="{'invisible': started}">Téri Figyelem - Vakondcsapda</h1>
+      <div [ngClass]="{'invisible': dataProtection || statistics || tables, 'flex-column overlay': !started && !dataProtection && !statistics && !tables, 'started-row': started && !dataProtection && !statistics && !tables}">
+        <h1 class="title" [ngClass]="{'invisible': started}">
+          <span>V</span>
+          <span>a</span>
+          <span>k</span>
+          <span>o</span>
+          <span>n</span>
+          <span>d</span>
+          <span>c</span>
+          <span>s</span>
+          <span>a</span>
+          <span>p</span>
+          <span>d</span>
+          <span>a</span>
+        </h1>
         <div class="game-data" [ngClass]="{'invisible': startOverlay}">
-          <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()"></countdown>
+          <countdown [ngClass]="{'invisible': !started}" (outputTime)='displayTimer($event)' (stop)="stop()" [duration]="level"></countdown>
           <ul class="data-list">
             <p>Score: {{ points }}</p>
             <p>Moles hit: {{ moles }}</p>
             <p>Level: {{ level }}</p> 
           </ul>
         </div>
-        <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
-        <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
+        <div [ngClass]="{'invisible':isProfileOverlayOpen || started}" class="side-toggle-container">
+          <div class="side-toggle three-switch">
+                <span class="side-toggle-label">Nehézségi szint:</span>
+                <span type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">I</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="2" class="level-button" (click)="setDifficulty('medium')"><label [ngStyle]="{'background': difficulty==='medium' ? '#1ca339' : '#ffa7a7'}" for="radio-one">II</label></span>
+                <span type="radio" id="radio-one" name="switch-five" value="3" class="level-button" (click)="setDifficulty('hard')"><label [ngStyle]="{'background': difficulty==='hard' ? '#1ca339' : '#ffa7a7'}" for="radio-one">III</label></span>
+          </div>
+          <div class="side-toggle five-switch">
+            <span class="side-toggle-label">Játék hossza:</span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('1')"><label [ngStyle]="{'background': level===1 ? '#1ca339' : '#ffa7a7'}" for="radio-one">15s</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('2')"><label [ngStyle]="{'background': level===2 ? '#1ca339' : '#ffa7a7'}" for="radio-one">30s</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('4')"><label [ngStyle]="{'background': level===4 ? '#1ca339' : '#ffa7a7'}" for="radio-one">1m</label></span>
+            <span type="radio" id="radio-one" class="level-button" (click)="setLevel('8')"><label [ngStyle]="{'background': level===8 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2m</label></span>
+          </div>
+        </div>
+        <div [ngClass]="{'invisible': isProfileOverlayOpen}" class="button-container">
+          <button (click)="play()" class="play-button" [ngClass]="{'invisible': started}">Indítás</button>
+          <button (click)="stop()" class="play-button" [ngClass]="{'invisible': !started || startOverlay}" style="background-color: red; margin-top: 15px;">Stop</button>
         
-        <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
-        <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Statisztikák</button>
+          <button (click)="dataProtection = true" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
+          <button (click)="tables = true;" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Eredménytáblák</button>
+          <button (click)="statistics = true; loadCharts()" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Diagramok</button>
+        </div>
+        <div class="profile-container">
+          <user (isLoggedInOutput)="receiveDataFromChild($event)" (isClickedOutput)="isClickedEvent($event)" [isProfileOverlayOpen]="isProfileOverlayOpen" [isStartingGuideOpen]="showStartingGuide" [isGameStarted]="started" [isLoggedInInput]="isLoggedIn"></user>
+        </div>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !dataProtection}">
         <div class="game-data" style="padding: 35px; min-height: 69%">
           <h1 style="width: 100%">Adatvédelmi nyilatkozat</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore dolores ab iusto sunt consequatur natus quaerat provident eligendi velit sequi totam incidunt repellat, rem ducimus, praesentium eaque eum cupiditate blanditiis.
-          Facilis illum recusandae quaerat, nostrum illo dolorum quam quibusdam labore explicabo vel facere tenetur harum ab nesciunt tempore debitis voluptate? Labore, necessitatibus adipisci ab maiores corrupti facilis non sapiente soluta?</p>
+          <p>
+            A megadott felhasználói adatok a Google által üzemeltetett Firebase adatbázisban kerülnek tárolásra. Az adatok a jelszó és az e-mail cím kivételével felhasználásra kerülnek az eredmények kiértékelésekor. A felhasználó a teszt elindításával tudomásul veszi és hozzájárul a megadott adatok feldolgozásához.
+          </p>
         </div>
         <button (click)="dataProtection = false" class="play-button" style="margin-top: 15px;">Vissza</button>
       </div>
       <div class="flex-column overlay" [ngClass]="{'invisible': !statistics}" style="height: 100%">
-        <div class="game-data" style="padding: 35px; min-height: 80%; width: 100%;">
-          <statistics style="width: 80%;"></statistics>
+        <div class="game-data" style="padding: 35px; min-height: 80%;">
+          <statistics style="width: 80%; position: relative; height: 100%;"></statistics>
+          <button (click)="statistics = false" class="play-button">Vissza</button>
         </div>
-        <button (click)="statistics = false" class="play-button" style="margin-top: 15px;">Back</button>
+      </div>
+    <div class="flex-column overlay" [ngClass]="{'invisible': !tables}" style="height: 100%">
+      <div class="game-data" style="min-height: 100%; width: 100%;">
+        <tables style="width: 100%"></tables>
+        <button (click)="tables = false" class="play-button">Vissza</button>
       </div>
     </div>
-    <div class="row">
-      <canvas #board class="game-board" id="board">Your browser doesn't support canvas :(</canvas>
+  </div>
+    <div class="row" [ngClass]="{'invisible': !started}">
+      <canvas #board class="game-board" id="board">A böngésző nem támogatja a canvas elemet :(</canvas>
       <timeline [reactionTimes]="reactionTimes"></timeline>
     </div>
     <div class="countdown-overlay" [ngClass]="{'invisible':  !startCountdown}"><p id="beginning-countdown">3</p></div>
@@ -46,4 +89,5 @@
       <span class="light" id="light"></span>
     </div>
   </div>
+  <notification-permission [ngClass]="{'invisible': !isCookieVisible || !isLoggedIn}" style="display: flex;justify-content: center;align-items: flex-end;width: 100%;height: 100%;position: absolute;top: 0;"></notification-permission>
 </div>

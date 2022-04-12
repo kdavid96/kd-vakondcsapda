@@ -3,6 +3,8 @@ export class Square {
   private z = 40;
   private background;
   private mole;
+  private mole2;
+  private mole3;
   private road;
   private house;
   private fps = 60;
@@ -18,6 +20,8 @@ export class Square {
     this.house = new Image();
     this.background = document.getElementById("grass");
     this.mole = document.getElementById("mole");
+    this.mole2 = document.getElementById("mole_v2");
+    this.mole3 = document.getElementById("mole_v3");
     this.house = document.getElementById("house");
     this.road = document.getElementById("road");
     ctx.drawImage(this.background, 40, 40, 40, 40);
@@ -79,4 +83,28 @@ export class Square {
 
       context.drawImage(this.mole, x * 40, y * 40, 36, 36);
     }
+
+  drawMultiple(count:number, coordinateArray: Array<any>[], roadPlace:number, direction: number){
+    var context = this.ctx;
+    var outerZ = this.z;
+
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    this.init(context, roadPlace, direction);
+    this.mole.src="../assets/mole_trp_smol.png";
+    this.mole2.src="../assets/mole_trp_smol_v2.png";
+    this.mole3.src="../assets/mole_trp_smol_v3.png";
+    //(0,0)---(360,360) közötti koordináták az átló
+    for(let i = 0 ; i < coordinateArray.length ; i++){
+      (outerZ*coordinateArray[i]['x']) > 360 ? coordinateArray[i]['x'] = 0 : '';
+      (outerZ*coordinateArray[i]['y']) > 360 ? coordinateArray[i]['y'] = 0 : '';
+      if(i === 0){
+        context.drawImage(this.mole, coordinateArray[i]['x'] * 40, coordinateArray[i]['y'] * 40, 36, 36);
+      }else if(i === 1){
+        context.drawImage(this.mole2, coordinateArray[i]['x'] * 40, coordinateArray[i]['y'] * 40, 36, 36);
+      }else{
+        context.drawImage(this.mole3, coordinateArray[i]['x'] * 40, coordinateArray[i]['y'] * 40, 36, 36);
+      }
+    }
   }
+
+}

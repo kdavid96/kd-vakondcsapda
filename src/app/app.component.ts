@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore'
+import { MessagingService } from './shared/messaging.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore'
 export class AppComponent {
   darkMode: boolean = true;
   title = 'kd-vakondcsapda-canvas';
-  constructor(private store: AngularFirestore) { }
+  message;
+  constructor(private store: AngularFirestore) {
+    localStorage.setItem('user', '0');
+  }
 }
