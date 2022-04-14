@@ -18,6 +18,8 @@ export class BoardComponent implements OnInit {
   @ViewChild(CountdownComponent) childCountdown:CountdownComponent;
   @ViewChild(StatisticsComponent) childStatistics:StatisticsComponent;
 
+  @Input() darkMode: boolean;
+
   ctx: CanvasRenderingContext2D;
   points: number = 0;
   moles: number = 0;
@@ -80,7 +82,6 @@ export class BoardComponent implements OnInit {
     this.tapSound = new Audio("../../assets/tap.m4a");
     this.initBoard();
     let orientation = screen.orientation.type;
-    console.log(orientation);
 
     if(this.isTouchEnabled()){
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
@@ -201,6 +202,7 @@ export class BoardComponent implements OnInit {
 
   logKey = (e) => {
     if(this.started){
+      console.log(e.key);
       this.otherButton = true;
       //0 = fent, 1 = lent, 2 = bal, 3 = jobb
       // 38 = fent, 40 = lent, 37 = bal, 39 = jobb
@@ -510,7 +512,6 @@ export class BoardComponent implements OnInit {
 
   stop() {
     let user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : {data: {uid: 'noid'}};
-    console.log(user.data);
     this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty, this.points);
     this.reactionTimes = [];
     this.setWhite();

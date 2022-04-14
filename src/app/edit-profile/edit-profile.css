@@ -88,6 +88,16 @@ form {
     justify-content: flex-start;
     align-items: center;
     overflow: scroll;
+    padding-right: 15px;
+}
+
+form::-webkit-scrollbar{
+    width: 10px;
+    padding-left: 5px;
+}
+
+form::-webkit-scrollbar-thumb{
+    color:rgb(167, 38, 21);
 }
 
 form > div {

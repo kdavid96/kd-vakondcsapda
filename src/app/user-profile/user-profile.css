@@ -18,6 +18,9 @@
     font-size: .6rem;
     padding: 10px;
     border-radius: 25px;
+    border: none;
+    background: #22262e;
+    color: white;
 }
 
 .button-container-inline > button:nth-of-type(2):focus {
@@ -25,7 +28,6 @@
 }
 
 .following{
-    border: none;
     color: white;
-    background-color: #538bff;
+    background-color: #538bff !important;
 }

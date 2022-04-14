@@ -17,13 +17,15 @@ export class UserProfileComponent implements OnInit {
 
   followers;
   following;
+  followersSub;
+  followingSub;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.following = this.authService.getFollowing(this.currentUser, this.user.data.uid).valueChanges();
 
-    this.following.subscribe(follow => this.isFollowing = follow);
+    this.followingSub = this.following.subscribe(follow => this.isFollowing = follow);
 
     this.authService.registerUser(this.currentUser);
   }
@@ -45,8 +47,7 @@ export class UserProfileComponent implements OnInit {
 
 
   ngOnDestroy() {
-    if(this.followers) this.followers.unsubscribe()
-    if(this.following) this.following.unsubscribe()
+    if(this.followingSub) this.followingSub.unsubscribe()
   }
 
 }

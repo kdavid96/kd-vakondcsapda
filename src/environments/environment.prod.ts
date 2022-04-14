@@ -9,5 +9,5 @@ export const environment = {
     authDomain: 'kd-vakondcsapda.firebaseapp.com',
     messagingSenderId: '653734981004',
   },
-  production: true
+  production: false
 };

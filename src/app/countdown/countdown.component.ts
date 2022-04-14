@@ -33,7 +33,7 @@ export class CountdownComponent implements OnInit {
         this.stop.emit();
       }
       timeDiff /= 1000;
-      this.miliseconds = (this.endTime - this.startTime);
+      this.miliseconds = parseInt((this.endTime - this.startTime).toFixed(0));
       this.outputTime.emit({miliseconds: this.miliseconds});
     })
   }

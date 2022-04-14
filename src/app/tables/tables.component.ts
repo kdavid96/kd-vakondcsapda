@@ -60,7 +60,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
         'misses': game.data.filter(a => !a.hit).length,
         'points': game.points
       }));
-      if(this.userList){
+      if(this.userList && this.userList.length>0){
         this.resultsArray.forEach((data,index) => {
           this.resultsArray[index].id = this.userList.filter(user => user.data.uid === data.id)[0].data.username;
         })  

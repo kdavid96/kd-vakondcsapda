@@ -1,6 +1,6 @@
 <div class="container">
     <div class="to-follow">
-        <ul class="to-follow-list">
+        <ul *ngIf="userList.length>0" class="to-follow-list">
             <li *ngFor="let user of userList">
                 <user-profile style="width:100%" [user]="user" [currentUser]="userId" *ngIf="user.data.uid!==userId"></user-profile>
             </li>
