@@ -11,7 +11,7 @@
             <h1 style="margin-top:5%">Üdvözlöm, <span class="greeting">{{user?.name || 'Felhasználó'}}</span></h1>
 
             <ul class="profile-menu">
-                <li (click)="isFollowing=true">Követett felhasználók</li>
+                <li (click)="isFollowing=true">Felhasználók keresése</li>
                 <li (click)="isEditing=true">Felhasználói fiók szerkesztése</li>
             </ul>
 
@@ -24,6 +24,7 @@
                     <li>Átlagos eredmény: {{avgScore}} pont</li>
                 </ul>
             </div>
+
         </div>
         <div [ngClass]="{'invisible': !isFollowing}">
             <h1 style="margin-bottom: 15%">Felhasználók</h1>

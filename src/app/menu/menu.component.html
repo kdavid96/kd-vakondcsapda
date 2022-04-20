@@ -17,6 +17,10 @@
         <button *ngIf="router.url === '/'" routerLink="/dataprotection" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
       </div>
     </div>
+    <div *ngIf="isLoggedIn" class="best-score-container">
+      <h4>A legújabb eredmény:</h4>
+      <p><span>{{bestFollowingResult.id}}:</span> {{bestFollowingResult.points}} pont</p>
+    </div>
   </div>
 </div>
 <div *ngIf="showGuide && isLoggedIn">

@@ -85,6 +85,27 @@ button:hover{
     position: absolute;
 }
 
+.best-score-container{
+  width: 50%;
+  text-align: center;
+  background: #21252d;
+  padding: 25px;
+  border-radius: 25px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.best-score-container > h4 {
+  font-size: 1.2vw;
+  color: #ffc753;
+}
+
+.best-score-container > p > span {
+  color: #538bff;
+}
+
 @media screen and (max-width: 1600px) {
     .three-switch label, .five-switch label {
       width: 60px;

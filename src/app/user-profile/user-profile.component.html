@@ -1,5 +1,5 @@
 <div class="profile">
-        <span class="name">{{user?.data?.name}}</span><span *ngIf="isFollowing; else followPlaceholder;"><span *ngIf="points; else pointsPlaceholder;" class="points">{{points}} pont</span></span>
+        <span class="name">{{user?.data?.name}}</span><span *ngIf="isFollowing; else followPlaceholder;"><!--<span *ngIf="points; else pointsPlaceholder;" class="points">{{points}} pont</span>--></span>
     <div *ngIf="isFollowing; then unfollowButton else followButton">
         placeholder
     </div>
