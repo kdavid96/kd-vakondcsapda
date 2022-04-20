@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, HostListener } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -16,7 +16,10 @@ export class TablesComponent implements OnInit, AfterViewInit {
   resultsArray: any[] = [];
   userList: any;
   displayedColumns: string[] = ['id', 'date', 'difficulty', 'sum', 'hits', 'misses', 'points'];
+  pageSizeOptions: number[] = [5, 10, 20];
+  pageSizeDefault: number = 10;
   dataSource;
+  small: boolean = false;
 
   @ViewChild(MatPaginator)
   paginator: MatPaginator;
@@ -31,15 +34,52 @@ export class TablesComponent implements OnInit, AfterViewInit {
     difficulty: ''
   };
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    if(!event){
+      if(window.innerWidth > 900){
+        this.pageSizeDefault = 10;
+        this.small = false;
+        this.pageSizeOptions = [5, 10, 20];
+        this.loadReactionTimes();
+      }
+      if(window.innerWidth < 900){
+        this.pageSizeDefault = 1;
+        this.small = true;
+        this.pageSizeOptions = [1];
+        this.loadReactionTimes();
+      }
+    }else{
+      if(event.target.innerWidth > 900){
+        this.pageSizeDefault = 10;
+        this.small = false;
+        this.pageSizeOptions = [5, 10, 20];
+        this.loadReactionTimes();
+      }
+      if(event.target.innerWidth < 900){
+        this.pageSizeDefault = 1;
+        this.small = true;
+        this.pageSizeOptions = [1];
+        this.loadReactionTimes();
+      }
+    }
+
+  }
+
   constructor(private reactionTimeService: ReactionTimeServiceService, private authService: AuthService) {
     this.authService.getUserList().subscribe(userList => {
       this.userList = userList,
       this.loadReactionTimes()
     });
+    this.onResize();
   }
 
-  ngOnInit(): any {
-    window.addEventListener("resize", this.windowSizeListener.bind(this));
+  ngOnInit(): any {}
+
+  formatDate(date){
+    var [datePart, timePart] = date.split('T');
+    var returnString = datePart.split('-')[0] + "." + datePart.split('-')[1] + "." + datePart.split('-')[2] + " " + timePart.split(':')[0] + ":" + timePart.split(':')[1] + ":" + timePart.split(':')[2].split('.')[0];
+    return returnString;
   }
 
   loadReactionTimes(): void {
@@ -54,13 +94,13 @@ export class TablesComponent implements OnInit, AfterViewInit {
       this.resultsArray = data.map(game => ({
         'id': game.id,
         'difficulty': game.difficulty,
-        'date': game.date,
+        'date': this.formatDate(new Date(game.date).toISOString()),
         'sum': Math.ceil(game.data.map(data => data.miliseconds).reduce((a,b) => a+b)/1000),
         'hits': game.data.filter(a => a.hit ).length,
         'misses': game.data.filter(a => !a.hit).length,
         'points': game.points
       }));
-      if(this.userList){
+      if(this.userList && this.userList.length>0){
         this.resultsArray.forEach((data,index) => {
           this.resultsArray[index].id = this.userList.filter(user => user.data.uid === data.id)[0].data.username;
         })  
@@ -74,6 +114,8 @@ export class TablesComponent implements OnInit, AfterViewInit {
       this.dataSource = new MatTableDataSource(this.resultsArray);
       this.dataSource.paginator = this.paginator;
       this.paginator._intl.itemsPerPageLabel = 'Elemek száma oldalanként:';
+      this.paginator._intl.nextPageLabel = 'Következő oldal';
+      this.paginator._intl.previousPageLabel = 'Előző oldal';
       this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
         const start = page * pageSize + 1;
         const end = length < (page + 1) * pageSize ? length : (page + 1) * pageSize;
@@ -86,7 +128,7 @@ export class TablesComponent implements OnInit, AfterViewInit {
     this.nameFilter.valueChanges
       .subscribe(
         id => {
-          this.filterValues.id = id;
+          this.filterValues.id = id.toLowerCase();
           this.dataSource.filter = JSON.stringify(this.filterValues);
         }
       )
@@ -124,23 +166,4 @@ export class TablesComponent implements OnInit, AfterViewInit {
     this.loadReactionTimes();
   }
 
-  windowSizeListener() {
-    if(document.documentElement.clientWidth < 750 && this.displayedColumns.length === 6){
-      this.displayedColumns = ['id', 'date', 'sum', 'hits/misses'];
-      this.loadReactionTimes();
-    }
-    if(document.documentElement.clientWidth > 750 && this.displayedColumns.length === 4){
-      this.displayedColumns =['id', 'date', 'difficulty', 'sum', 'hits', 'misses'];
-      this.loadReactionTimes();
-
-    }
-    if(document.documentElement.clientWidth < 600 && this.displayedColumns.length === 4){
-      this.displayedColumns = ['id', 'date', 'hits/misses'];
-      this.loadReactionTimes();
-    }
-    if(document.documentElement.clientWidth > 600 && this.displayedColumns.length === 3){
-      this.displayedColumns = ['id', 'date', 'sum', 'hits/misses'];
-      this.loadReactionTimes();
-    }
-  }
 }

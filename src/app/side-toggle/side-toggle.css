@@ -1,0 +1,170 @@
+  .side-toggle-container{
+    position: absolute;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 25%;
+    height: 95%;
+    max-width: 100px;
+  }
+  
+  .side-toggle{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-left: max(25px, 5%);
+    z-index: 18;
+  }
+  
+  .five-switch{
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .five-switch input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+  }
+  
+  .five-switch label {
+    background-color: #e4e4d4;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.1s ease-in-out;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .five-switch label:hover {
+    cursor: pointer;
+  }
+  
+  .five-switch input:checked + label {
+    background-color: #a5dc86;
+    box-shadow: none;
+  }
+  
+  .three-switch{
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .three-switch input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+  }
+  
+  .three-switch label {
+    background-color: #e4e4d4;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.1s ease-in-out;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .three-switch label:hover {
+    cursor: pointer;
+  }
+  
+  .three-switch input:checked + label {
+    background-color: #a5dc86;
+    box-shadow: none;
+  }
+  
+  .level-button{
+    margin-top: 15px;
+    cursor: pointer;
+  }
+  
+  .difficulty-button{
+    margin-top: 15px;
+    padding: 7px;
+  }
+  
+  .level > button::nth-of-type(3){
+    background-color: green;
+  }
+  
+  @media screen and (max-width: 1600px) {
+    .three-switch label, .five-switch label {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  
+  @media screen and (max-width: 1200px) {
+    .side-toggle-container{
+      flex-direction: row;
+      height: 25%;
+      width: 100%;
+      bottom: 15px;
+      left: 0;
+      top: auto;
+      max-width: 100%;
+    }
+  
+    .side-toggle{
+      flex-direction: row;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+  
+    .side-toggle-label{
+      display: none;
+    }
+  }
+  
+  @media  screen and (max-width: 700px) {
+    .side-toggle-container{
+      flex-direction: column;
+    }
+  
+    .three-switch label, .five-switch label {
+      width: 45px;
+      height: 45px;
+    }
+  }
+  
+  @media screen and (max-width: 400px) {
+    .side-toggle-container{
+      flex-direction: column;
+      width: 100%;
+      height: fit-content;
+      bottom: 15px;
+    }
+  
+    .side-toggle{
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+  }

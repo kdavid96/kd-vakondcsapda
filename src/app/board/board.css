@@ -1,17 +1,3 @@
-button {
-  border: none;
-  padding: 15px;
-  border-radius: 25px;
-  padding-inline: 45px;
-  color: white;
-  background-color: #538bff;
-  cursor: pointer;
-}
-
-button:hover{
-  background: #004ad4;
-}
-
 .game-board {
   height: 95%;
   width: auto;
@@ -21,6 +7,11 @@ button:hover{
   max-height: 740px;
 }
 
+.flex-row{
+  width: 100%;
+  height: 100%;
+}
+
 .container {
   width: 100%;
   height: 100%;
@@ -28,39 +19,7 @@ button:hover{
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.profile-container{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-}
-
-.top-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  position: absolute;
-  background: rgb(239,239,239);
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 5px;
-  width: 30%;
-  height: 90%;
-  top: 2%;
-  padding-block: 25px;
-  max-width: 250px;
-}
-
-.button-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 15;
-  top: -35px;
+  overflow-x: hidden;
 }
 
 .overlay{
@@ -70,24 +29,6 @@ button:hover{
 
 .relative{
   position: relative !important;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 90%;
-  height: 85%;
 }
 
 .invisible {
@@ -150,11 +91,33 @@ button:hover{
 }
 
 .game-data {
+  text-align: center;
+  padding-block: 15px;
+  height: 10vh;
+  margin-top: 10px !important;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  text-align: center;
+  position: relative;
+  width: min(45%, 700px);
+  margin: 0 auto;
+  padding-inline: 25px;
+  border-radius: 25px;
+  box-shadow: 0px 0px 26px 2px rgba(79,79,79,0.55);
+}
+
+.game-data-result {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 45px;
+  background: white;
+  z-index: 2;
 }
 
 .light {
@@ -232,43 +195,40 @@ button:hover{
 
 .countdown-overlay{
   position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  width: 100%;
-  height: 85vh;
+  width: 99%;
+  height: 99%;
   font-size: 15rem;
   background: rgb(239,239,239);
-  background: linear-gradient(299deg, rgba(239,239,239,1) 0%, rgba(239,239,239,0.8071429255295868) 100%);
+  background: linear-gradient(299deg, rgba(239,239,239,1) 0%, rgba(239,239,239,1) 100%);
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   border-left: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+}
+
+.column{
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
   height: 100%;
-}
-
-.side-toggle-container{
-  position: absolute;
-  left: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 25%;
-  height: 95%;
-  max-width: 100px;
-}
-
-.side-toggle{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 18;
+  gap: 5%;
 }
 
 .five-switch{
@@ -365,39 +325,82 @@ button:hover{
   background-color: green;
 }
 
-@media screen and (max-width: 1600px) {
-  .three-switch label, .five-switch label {
-    width: 60px;
-    height: 60px;
-  }
+.invisible {
+  display: none !important;
+}
+
+button {
+  border: none;
+  padding: 15px;
+  border-radius: 25px;
+  padding-inline: 45px;
+  color: white;
+  background-color: #538bff;
+  cursor: pointer;
+  z-index: 19;
+}
+
+button:hover{
+  background: #004ad4;
+}
+
+.arrow-key-container {
+  display: inline-block;
+  text-align: center;
+  transform: translate3d(0,0,0);
+}
+
+  
+.arrow-key {
+  align-items: center;
+  background: #4b52bd;
+  border-radius: 35%;
+  box-shadow: -1px 1px 0 #4643ae, -2px 2px 0 #4643ae, -3px 3px 0 #4643ae, -4px 4px 0 #4643ae;
+  color: rgb(209, 215, 221);
+  display: inline-flex;
+  font-size: 30px;
+  font-weight: bold;
+  height: 75px;
+  justify-content: center;
+  margin: 5px;
+  transform: translate3d(0, 0, 0);
+  transition: box-shadow .1s linear, transform .1s linear;
+  width: 75px;
+  font-family: monospace;
+}
+
+.arrow-key:active, .arrow-key.press {
+  box-shadow: 0px 0px 20px 5px #618FFF;
+  transform: translate3d(-3px, 3px, 0);
+  color: rgb(255, 255, 255);
+}
+
+.inside-result-container {
+  height: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  position: relative;
+  width: min(45%, 700px);
+  margin: 0 auto;
+  padding-inline: 25px;
+  border-radius: 25px;
+  box-shadow: 0px 0px 26px 2px rgba(79,79,79,0.55);
 }
 
 @media screen and (max-width: 1200px) {
-  .side-toggle-container{
-    flex-direction: row;
-    height: 25%;
-    width: 100%;
-    bottom: 15px;
-    left: 0;
-    top: auto;
-    max-width: 100%;
-  }
-
-  .side-toggle{
-    flex-direction: row;
-    gap: 20px;
-  }
-
-  .side-toggle-label{
+  .arrow-key-container {
     display: none;
   }
 }
 
 @media screen and (max-width: 1000px) {
   .row{
-    display: block;
-    width: 100%;
-    height: auto;
+    display: flex;
+    width: auto;
+    height: 90%;
+    margin-left: 5%;
   }
 
   #timeline-container{
@@ -447,10 +450,6 @@ button:hover{
     display: none;
   }
 
-  .container{
-    height: 89%;
-  }
-
   .title{
     font-size: 2.5rem;
   }
@@ -469,6 +468,10 @@ button:hover{
   .button-container{
     top: -10%;
   }
+
+  .inside-result-container{
+    width: 80%;
+  }
 }
 
 @media  screen and (max-width: 650px) {
@@ -477,8 +480,11 @@ button:hover{
     top: -50px;
     min-width: 80%;
   }
-}
 
+  .game-data-started{
+    top: 0 !important;
+  }
+}
 @media screen and (max-width: 600px) {
   .title{
     font-size: 1.5rem;
@@ -509,6 +515,11 @@ button:hover{
 @media screen and (max-width: 360px) {
   .top-row-small{
     max-height: 120px;
+  }  
+}
+
+@media screen and (max-height: 640px) {
+  .top-row{
+    height: 124%;
   }
-  
 }

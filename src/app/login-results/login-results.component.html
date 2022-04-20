@@ -1,0 +1,14 @@
+<div class="login-results-container" *ngIf="resultsArray.length > 0; else noResults;">
+    <h1>Az utolsó bejelentkezés óta mentett eredmények:</h1>
+    <ul>
+        <li *ngFor="let result of resultsArray"><span>{{result.date}}</span><span>{{result.id}}</span><span>{{result.difficulty}}</span><span>{{result.points}}</span></li>
+    </ul>
+    <button (click)="continue()">Tovább</button>
+</div>
+<ng-template #noResults>
+    <div class="login-results-container">
+        <h1>Az utolsó bejelentkezés óta mentett eredmények:</h1>
+        <p>Nincsenek mentett eredmények</p>
+        <button (click)="continue()">Tovább</button>
+    </div>
+</ng-template>

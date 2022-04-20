@@ -16,13 +16,12 @@ exports.scoreNotification =
               const userId: string = snap.data().id;
               const payload = {
                 notification: {
-                  title: "Újabb eredmény került regisztrálásra!",
+                  title: "Új eredmény került regisztrálásra!",
                   body: "Pontok: " + points.toString(),
                 },
               };
-              functions.logger.info("payload", payload);
-              functions.logger.info("userId", userId);
-              functions.logger.info("context", context);
+              functions.logger.info(userId);
+              functions.logger.info(context);
               let token: string;
               const tokenSnapshot =
                   await admin.firestore().collection("tokens");
@@ -41,3 +40,10 @@ exports.scoreNotification =
                     }
                   });
             });
+
+exports.followNotificatoin =
+            functions.database.ref("/followers/{userId}")
+                .onUpdate(async (snap, context) => {
+                  functions.logger.error(snap);
+                  functions.logger.info(context);
+                });

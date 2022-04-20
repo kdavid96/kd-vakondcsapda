@@ -1,6 +1,60 @@
 #chartContainer{
+    width: 90%;
+    height: 75%;
+    margin: 0 auto;
+}
+
+.chartContainer{
+    position: relative;
+}
+
+#myChart{
+    height: auto;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    position: relative;
+}
+
+button {
+    padding: 15px;
+    border-radius: 25px;
+    padding-inline: 45px;
+    cursor: pointer;
+    z-index: 19;
+    position: relative;
+    border: 3px solid #538bff;
+    cursor: pointer;
+    z-index: 19;
+    position: relative;
+    color: black;
+}
+
+.list-button {
+    border-radius: 0;
+    background: white;
+    color: black;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.list-button:hover {
+    background: #88b0ff77;
+}
+
+.chart-container{
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .chart-selector{
@@ -22,10 +76,6 @@
     margin: 10px;
 }
 
-.chart-container{
-    padding: 10%;
-}
-
 .chart-selector-small{
     display: none;
     flex-direction: row;
@@ -33,7 +83,7 @@
     align-items: center;
 }
 
-.chart-selector-small li{
+.chart-selector-small li {
     text-decoration: none;
     list-style-type: none;
     cursor: pointer;
@@ -44,12 +94,29 @@
     margin: 10px;
 }
 
-@media screen and (max-width: 650px) {
+h1 {
+    text-align: center;
+    padding-block: 25px;
+}
+
+.downward-arrow {
+    transform: rotate(180deg);
+}
+
+@media screen and (max-width: 1050px) {
     .chart-selector{
-        display: none;
+        flex-direction: column;
     }
 
-    .chart-selector-small{
-        display: flex;
+    .chart-selector > li {
+        text-decoration: none;
+        list-style-type: none;
+        cursor: pointer;
+        background-color: azure;
+        padding: 10px;
+        border-radius: 15px;
+        box-shadow: #1c0d0d 3px 3px 3px;
+        margin: 5px;
+        font-size: .8rem;
     }
 }

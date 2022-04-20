@@ -1,14 +1,17 @@
 <div class="chart-container">
-    <p>Diagramok</p>
-    <ul class="chart-selector">
-        <li (click)="destroy(); loadHitsPerSecondsChart()">Találatok másodpercenként</li>
-        <li (click)="destroy(); loadHitsPerGameChart()">Találatok játékonként</li>
-    </ul>
-    <ul class="chart-selector-small">
-        <li (click)="destroy(); loadHitsPerSecondsChart()">t/mp</li>
-        <li (click)="destroy(); loadHitsPerGameChart()">t/j</li>
-    </ul>
+    <h1>Diagramok</h1>
+
+    <button style="width: 90%;" mat-button [matMenuTriggerFor]="menu">{{selected}}</button>
+
+    <mat-menu #menu="matMenu">
+        <button class="list-button" (click)="destroy(); loadOwnHitsPerSecondsChart()" mat-menu-item>Saját statisztikák</button>
+        <button class="list-button" (click)="destroy(); loadHitsPerSecondsChart()" mat-menu-item>Találatok másodpercenként</button>
+        <button class="list-button" (click)="destroy(); loadHitsPerGameChart()" mat-menu-item>Találatok játékonként</button>
+        <button class="list-button" (click)="destroy(); loadReactionTimePerAgeGroup()" mat-menu-item>Reakcióidő korcsoportonként</button>
+        <button class="list-button" (click)="destroy(); loadReactionTimePerAgeEducation()" mat-menu-item>Reakcióidő végzettség szerint</button>
+    </mat-menu>
+
     <div id="chartContainer">
-        <canvas id="myChart" width="450" height="450"></canvas>
+        <canvas id="myChart"></canvas>
     </div>
 </div>

@@ -1,10 +1,14 @@
-import { Component, ViewChild, ElementRef, OnInit, HostListener, Input } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import { COLS, ROWS, BLOCK_SIZE} from '../constants';
 import { CountdownComponent } from '../countdown/countdown.component';
 import { StatisticsComponent } from '../statistics/statistics.component';
 import { TablesComponent } from '../tables/tables.component';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
 import { Square } from './square';
+import { GameDataService } from '../shared/game-data.service';
+import { Observable, of as ObservableOf } from 'rxjs';
+import { AuthService } from '../shared/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -16,12 +20,12 @@ export class BoardComponent implements OnInit {
   // Canvas-re mutató referencia
   @ViewChild("board", { static: true }) canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild(CountdownComponent) childCountdown:CountdownComponent;
-  @ViewChild(StatisticsComponent) childStatistics:StatisticsComponent;
+
+  @Input() darkMode: boolean;
 
   ctx: CanvasRenderingContext2D;
   points: number = 0;
   moles: number = 0;
-  level: number = 1;
   direction: number;
   roadPlace: number;
   roadCoordinate: number = 0;
@@ -35,14 +39,13 @@ export class BoardComponent implements OnInit {
   miliseconds: number;
   loaded: boolean = false;
   started: boolean = false;
-  dataProtection: boolean = false;
-  statistics: boolean = false;
-  tables: boolean = false;
   molePosition: number = 0;
   otherButton: boolean = true;
   startOverlay: boolean = true;
   startCountdown: boolean = false;
   beginningCountdown: HTMLElement;
+  countdownOverlay: HTMLElement;
+  levelSet: boolean = false;
   count: number = 3;
   timer: any;
   xPos: any;
@@ -50,22 +53,33 @@ export class BoardComponent implements OnInit {
   offsetX: any;
   offsetY: any;
   isLandscape: boolean = true;
-  isProfileOverlayOpen: boolean = false;
   tapSound: any;
+  errorSound: any;
+  countDownSound: any;
   loggedInUser: any = null;
   isLoggedIn: boolean = false;
-  difficulty: string = "easy";
-  isCookieVisible: boolean = true;
-  showStartingGuide: boolean = this.isLoggedIn ? true : false;
+  endCountDown: boolean = false;
+  showResult: boolean = false;
+  user: object;
+  
 
-  constructor(private reactionTimeService: ReactionTimeServiceService) {
+  difficulty: string;
+  level: number = 1;
+
+  overlaySub;
+  startedSub;
+  levelSub;
+  difficultySub;
+  userSub;
+  startTrialGameSub;
+
+  constructor(private reactionTimeService: ReactionTimeServiceService, private gameDataService: GameDataService, private authService: AuthService, private router: Router) {
     this.loggedInUser = JSON.parse(localStorage.getItem('user'));
   }
 
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
     let orientation = screen.orientation.type;
-    console.log(orientation);
     if(this.isTouchEnabled()){
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
         this.isLandscape = true;
@@ -76,11 +90,37 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.overlaySub.unsubscribe();
+    this.startedSub.unsubscribe();
+    this.levelSub.unsubscribe();
+    this.difficultySub.unsubscribe();
+    this.userSub.unsubscribe();
+  }
+
+  getKey = (event) => {
+    const parsedKey = event.key.toLowerCase().replace("\\", "\\\\");
+    const parsedCode = event.code.toLowerCase();
+    const element =
+      document.querySelector(`[data-key="${parsedCode}"]`) ||
+      document.querySelector(`[data-key="${parsedKey}"]`);
+  
+    return element;
+  };
+
   ngOnInit(): void {
-    this.tapSound = new Audio("../../assets/tap.m4a");
+    this.overlaySub = this.gameDataService.currentStartOverlay.subscribe(value => this.startOverlay = value);
+    this.startedSub = this.gameDataService.currentStarted.subscribe(value => this.started = value);
+    this.levelSub = this.gameDataService.currentLevel.subscribe(value => this.level = value);
+    this.difficultySub = this.gameDataService.currentDifficulty.subscribe(value => this.difficulty = value);
+    this.userSub = this.authService.getUser().subscribe(user => this.user = user);
+
+    this.tapSound = new Audio("../../assets/tap.wav");
+    this.errorSound = new Audio("../../assets/error.wav");
+    this.errorSound.volume = 0.7;
+    this.countDownSound = new Audio("../../assets/clock.wav");
     this.initBoard();
     let orientation = screen.orientation.type;
-    console.log(orientation);
 
     if(this.isTouchEnabled()){
       if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
@@ -90,7 +130,20 @@ export class BoardComponent implements OnInit {
       }
       this.setUpTouch();
     }else{
-      document.addEventListener('keydown', this.logKey);
+      document.addEventListener('keydown', (event) => {
+        this.logKey(event);
+        const key = this.getKey(event);
+        if (key) {
+          key.classList.add("press");
+        }
+      });
+
+      document.addEventListener("keyup", (event) => {
+        const key = this.getKey(event);
+        if (key) {
+          key.classList.remove("press");
+        }
+      });  
     }
 
     const letters = document.querySelectorAll('span');
@@ -100,6 +153,7 @@ export class BoardComponent implements OnInit {
         filteredLetters.push(letters[i]);
       }
     }
+    this.play();
   }
 
   isTouchEnabled(): any {
@@ -217,6 +271,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
           this.reactionTimes = this.reactionTimes.slice();
           this.points*=0.9;
+          this.errorSound.play();
           this.blinkRed();
         }
       }
@@ -233,6 +288,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
           this.reactionTimes = this.reactionTimes.slice();
           this.points*=0.9;
+          this.errorSound.play();
           this.blinkRed();
         }
       }
@@ -249,6 +305,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
           this.reactionTimes = this.reactionTimes.slice();
           this.points*=0.9;
+          this.errorSound.play();
           this.blinkRed();
         }
       }
@@ -265,6 +322,7 @@ export class BoardComponent implements OnInit {
           this.reactionTimes.push(this.timeSpent(this.miliseconds, false));
           this.reactionTimes = this.reactionTimes.slice();
           this.points*=0.9;
+          this.errorSound.play();
           this.blinkRed();
         }
       }
@@ -277,10 +335,10 @@ export class BoardComponent implements OnInit {
 
   timeSpent(miliseconds, hit) {
     if(this.reactionTimes.length === 0){
-      return {miliseconds: (this.level*15) - miliseconds, hit: hit}
+      return {miliseconds: (this.level*15000) - miliseconds, hit: hit}
     } else {
       let tempMiliseconds = this.reactionTimes.reduce((partialSum, a) => partialSum + a.miliseconds, 0);
-      return {miliseconds: (this.level*15) - tempMiliseconds - miliseconds, hit}
+      return {miliseconds: (this.level*15000) - tempMiliseconds - miliseconds, hit}
     }
   }
 
@@ -370,27 +428,35 @@ export class BoardComponent implements OnInit {
   play() {
     this.points = 0;
     this.moles = 0;
-    this.started = true;
-    this.startOverlay = true;
-    this.startCountdown = true;
+    this.gameDataService.changeStarted(true);
+    this.gameDataService.changeStartOverlay(false);
     let count = this.count;
+    this.showResult = false;
 
     this.beginningCountdown = document.getElementById("beginning-countdown");
+    this.countdownOverlay = document.getElementById("countdown-overlay");
     let beginningCountdown = this.beginningCountdown;
-
+    let countdownOverlay = this.countdownOverlay;
+    let countDownSound = this.countDownSound;
+    countDownSound.play();
     let timer = setInterval(function() {
       count--;
+      if(count !== 0){
+        countDownSound.play();
+      }
       beginningCountdown.innerHTML = count.toString();
       if(count === 0){
         clearInterval(timer);
         count = 3;
         beginningCountdown.innerHTML = count.toString();
+        this.endCountDown = false;
+        countdownOverlay.style.display = 'none';
       }
     }, 1000);
 
     setTimeout(() => {
-      this.startCountdown = false;
       this.startOverlay = false;
+      this.gameDataService.changeStartOverlay(false);
       //ures jatekter inicializalasa nullakkal
       this.childCountdown.start();
       this.board = this.getEmptyBoard();
@@ -423,17 +489,24 @@ export class BoardComponent implements OnInit {
 
     var x,y;
     let coordinateArray = [];
-
     switch(this.difficulty){
       case 'easy': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); new Square(this.ctx).draw(x,y,this.roadPlace,this.direction); break;
       case 'medium': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); coordinateArray.reverse(); new Square(this.ctx).drawMultiple(2,coordinateArray,this.roadPlace,this.direction);break;
       case 'hard': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.reverse(); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(3,coordinateArray,this.roadPlace,this.direction);break;
-    }  
+    }
 
     this.squares.forEach((square, index) => {
       setTimeout(this.drawEverything,index * 1000, square, index, index, this.roadPlace, this.direction)
     });
 
+    const up = document.getElementById("up");
+    const down = document.getElementById("down");
+    const left = document.getElementById("left");
+    const right = document.getElementById("right");
+    up.classList.remove('press');
+    down.classList.remove('press');
+    left.classList.remove('press');
+    right.classList.remove('press');
   }
   
   generateMolePosition(roadPlace, direction){
@@ -509,35 +582,25 @@ export class BoardComponent implements OnInit {
   }
 
   stop() {
-    let user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : {data: {uid: 'noid'}};
-    console.log(user.data);
-    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, user.data.uid, this.difficulty, this.points);
+    if(this.router.url === '/play_test'){
+      this.stopTest();
+      return;
+    }
+    this.reactionTimeService.createReactionTimeResult(this.reactionTimes, this.user, this.difficulty, this.points, this.level);
     this.reactionTimes = [];
     this.setWhite();
     this.childCountdown.childStop();
-    this.started = false;
+    this.gameDataService.changeStarted(false);
+    this.countdownOverlay.style.display = 'flex';
+    this.showResult = true;
   }
 
-  loadCharts() {
-    this.childStatistics.loadHitsPerSecondsChart();
-  }
-
-  setDifficulty(string){
-    this.difficulty = string;
-  }
-
-  setLevel(string){
-    this.level = Math.floor(string);
-  }
-
-  receiveDataFromChild(args){
-    this.isLoggedIn = args;
-  }
-
-  isClickedEvent(args){
-    if(this.isLoggedIn && args){
-      this.isCookieVisible = false;
-      this.showStartingGuide = false;
-    }
+  stopTest(){
+    this.reactionTimes = [];
+    this.setWhite();
+    this.childCountdown.childStop();
+    this.gameDataService.changeStarted(false);
+    this.countdownOverlay.style.display = 'flex';
+    this.showResult = true;
   }
 }

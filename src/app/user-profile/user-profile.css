@@ -1,7 +1,7 @@
 .profile{
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -18,6 +18,9 @@
     font-size: .6rem;
     padding: 10px;
     border-radius: 25px;
+    border: none;
+    background: #22262e;
+    color: white;
 }
 
 .button-container-inline > button:nth-of-type(2):focus {
@@ -25,7 +28,26 @@
 }
 
 .following{
-    border: none;
     color: white;
-    background-color: #538bff;
+    background-color: #538bff !important;
+}
+
+button {
+    cursor: pointer;
+}
+
+.profile > span:nth-of-type(1){
+    width: 25%;
+}
+
+.profile > span:nth-of-type(2){
+    width: 50%;
+}
+
+.profile > span:nth-of-type(3){
+    width: 25%;
+}
+
+.points {
+    font-size: 1.7vw;
 }

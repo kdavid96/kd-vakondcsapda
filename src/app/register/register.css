@@ -1,0 +1,385 @@
+h1 {
+    text-align: center;
+    padding-block: 25px;
+}
+
+.profileOverlay{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 19;
+    background: rgb(239,239,239);
+    border-radius: 5px;
+}
+
+.invisible{
+    display: none;
+}
+
+.invisibleToo{
+    display: none;
+}
+
+.profile-icon{
+    position: fixed;
+    left: 15px;
+    top: 10px;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    z-index: 17;
+}
+
+.profile-button{
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+}
+
+.profile-list{
+    list-style-type: none;
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.profile-list-items{
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+}
+
+.invisible {
+    display: none !important;
+}
+
+.button {
+    padding: 15px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #538bff;
+    color: white;
+    width: 100%;
+}
+
+.button:nth-last-of-type(2){
+    margin-bottom: 15px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.cover-div{
+    border-radius: 25px;
+    width: min(700px, 70%);
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0px 0px 26px 2px rgba(79,79,79,0.55);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: scroll;
+    align-items: center;
+    position: relative;
+    margin: 0 auto;
+    top: 15%;
+    padding-inline: 25px;
+    gap: 15px;
+    padding-top: 25px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+form > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form > div > input {
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    border-width: 1px;
+    border-width: 1;
+    border-color: grey;
+    border-style: solid;
+}
+
+form > div > select {
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.gender-select {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.sign-out-button{
+    position: fixed;
+    right: 15px;
+    top: 10px;
+    display: inline-block;
+    z-index: 17;
+    padding: 15px;
+    max-width: min(48vw, 200px);
+    font-size: min(13.5px, 3vw);
+}
+
+.transparent{
+    color: transparent !important;
+}
+
+.profile-info{
+    height: 100%;
+}
+
+.greeting{
+    color:#538bff;
+}
+
+.option-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    width: 100%;
+    display: flex;
+}
+  
+.option-list li{
+    color: black;
+    display: block;
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 60px;
+}
+
+.option-list li input[type=radio]{
+    position: absolute;
+    visibility: hidden;
+}
+
+.option-list li label{
+    display: block;
+    position: relative;
+    font-weight: 300;
+    padding: 15px 25px 15px 80px;
+    margin: 0px auto;
+    height: 30px;
+    z-index: 9;
+    cursor: pointer;
+    -webkit-transition: all 0.25s linear;
+    transition: all 0.25s linear;
+}
+
+.option-list li:hover label{
+    color: #255bc9;
+}
+
+.option-list li .check{
+    display: block;
+    position: absolute;
+    border: 5px solid black;
+    border-radius: 100%;
+    height: 25px;
+    width: 25px;
+    top: 6px;
+    left: 20px;
+    z-index: 5;
+    transition: border .25s linear;
+    -webkit-transition: border .25s linear;
+    transition: border .25s linear;
+}
+
+.option-list li:hover .check {
+    border: 5px solid #255bc9;
+}
+
+.option-list li .check::before {
+    display: block;
+    position: absolute;
+    content: '';
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    top: 5px;
+    left: 5px;
+    margin: auto;
+    transition: background 0.25s linear;
+    -webkit-transition: background 0.25s linear;
+}
+
+input[type=radio]:checked ~ .check {
+    border: 5px solid #538bff;
+}
+
+input[type=radio]:checked ~ .check::before {
+    background: #538bff;
+}
+
+input[type=radio]:checked ~ label {
+    color: #538bff;
+}
+
+.info-container {
+    height: 95%;
+    width: 100%;
+}
+
+.profile-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    gap: 25px;
+    margin-top: 15%;   
+}
+
+.profile-menu > li {
+    list-style-type: none;
+    color: white;
+    background: #538bff;
+    padding: 15px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.profile-menu > li:hover {
+    background: #004ad4;
+    cursor: pointer;
+}
+
+.stats {
+    position: relative;
+    padding: 25px;
+    background: #21252d;
+    border-radius: 10px;
+}
+
+.stats-title {
+    color: #ffc753;
+    margin-bottom: 5%;
+    position: relative;
+    top: 5%;
+}
+
+.stats-list {
+    color: white;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    margin-left: 35px;
+    gap: min(35px, 5vh);
+}
+
+.stats-list > li {
+    color: white;
+    list-style-type: none;
+}
+
+.back-button {
+    position: relative;
+    bottom: -85%;
+}
+
+.button-container-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.button-container-inline > button {
+    max-width: 150px;
+    font-size: .6rem;
+    padding: 10px;
+}
+
+.button-container-inline > button:nth-of-type(2):focus {
+    background: rgb(167, 38, 21);
+}
+
+.editing-back{
+    position: relative;
+    bottom: -90%;
+    left: 0%;
+}
+
+h1 {
+    font-size: 4vw;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#ageGroup, #education {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+    form > div {
+        flex-direction: column;
+    }
+    
+    form > div > label {
+        margin-bottom: 15px;
+    }
+
+    .stats-list {
+        margin-inline: 15px;
+    }
+
+    .option-list {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media screen and (max-height: 760px) {
+    .profile-icon{
+        top: 2px;
+    }
+    
+    .game-data{
+        top: 0;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .stats{
+        display: none;
+    }
+}

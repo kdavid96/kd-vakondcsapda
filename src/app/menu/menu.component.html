@@ -1,0 +1,24 @@
+<div class="top-row" [ngClass]="{'relative': started, 'overlay': !started, 'top-row-small': started && !dataProtection && !statistics && !tables}">
+  <div *ngIf="showGuide && isLoggedIn" style="z-index: 20;" >
+    <starting-guide style="z-index: 20;" (showStartingGuideChange)="showStartingGuideChange($event)" *ngIf="startOverlay"></starting-guide>
+  </div>
+  <div [ngClass]="{'invisible': dataProtection || statistics || tables, 'flex-column overlay': !started && !dataProtection && !statistics && !tables, 'started-row': started && !dataProtection && !statistics && !tables}">
+    <h1 class="title" [ngClass]="{'invisible': started}">Vakondcsapda</h1>
+    <div class="flex-row">
+      <div [ngClass]="{'invisible':isProfileOverlayOpen || started}" class="side-toggle-container">
+        <side-toggle (emitLevelAndDifficulty)="setLevelDifficulty($event)"></side-toggle>
+      </div>
+      <div [ngClass]="{'invisible': isProfileOverlayOpen}" class="button-container">
+        <button *ngIf="isLoggedIn" routerLink="/play" id="play-button">Indítás</button>
+        <button *ngIf="!isLoggedIn && router.url === '/'" routerLink="/login" class="play-button" style="margin-top: 15px;">Bejelentkezés</button>
+        <button *ngIf="!isLoggedIn && router.url === '/'" routerLink="/register" class="play-button" style="margin-top: 15px;">Regisztráció</button>
+        <button *ngIf="router.url === '/'" routerLink="/tables" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Eredménytáblák</button>
+        <button *ngIf="router.url === '/'" routerLink="/diagrams" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Diagramok</button>
+        <button *ngIf="router.url === '/'" routerLink="/dataprotection" class="play-button" [ngClass]="{'invisible': started}" style="margin-top: 15px;">Adatvédelmi nyilatkozat</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showGuide && isLoggedIn">
+  <notification-permission></notification-permission>
+</div>

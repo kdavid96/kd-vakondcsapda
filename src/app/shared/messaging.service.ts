@@ -12,7 +12,11 @@ export class MessagingService {
   messaging = getMessaging();
 
   constructor(private afMessaging: AngularFireMessaging, private authService: AuthService) {
-    this.afMessaging.messages.subscribe((message) => { console.log(message); this.currentMessage.next(message); });
+    this.afMessaging.messages.subscribe((message) => { this.currentMessage.next(message); });
+  }
+
+  getCurrentMessage() {
+    return this.currentMessage;
   }
 
   requestPermission(): string {
@@ -20,10 +24,11 @@ export class MessagingService {
       (token) => {
         this.currentToken.next(token);
         this.updateToken(token);
+        this.authService.getUser().subscribe(user => this)
         return token;
       },
       (err) => {
-        console.error('Unable to get permission to notify', err);
+        console.error('Nem sikerült a hozzáférés megszerzése', err);
         return null;
       }
     );
@@ -40,7 +45,6 @@ export class MessagingService {
 
   receiveMessage(): any {
     this.afMessaging.onMessage((payload) => {
-      console.log('Üzenet érkezett', payload);
       this.currentMessage.next(payload);
     })
   }

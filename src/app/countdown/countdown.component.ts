@@ -20,7 +20,6 @@ export class CountdownComponent implements OnInit {
 
 
   start(): void {
-    //this.endTime = new Date();
     this.endTime = performance.now();
     this.endTime += (this.duration*15)*1000;
     var timeDiff;
@@ -33,7 +32,11 @@ export class CountdownComponent implements OnInit {
         this.stop.emit();
       }
       timeDiff /= 1000;
-      this.miliseconds = (this.endTime - this.startTime);
+      this.miliseconds = parseInt((this.endTime - this.startTime).toFixed(0));
+      if(this.miliseconds<0){
+        this.childStop();
+        this.stop.emit();
+      }
       this.outputTime.emit({miliseconds: this.miliseconds});
     })
   }

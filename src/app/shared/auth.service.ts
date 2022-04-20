@@ -3,16 +3,19 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FirebaseError } from '@firebase/util';
-import { BehaviorSubject, from, map, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { GameDataService } from './game-data.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     isLoggedIn = false;
+    isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     user$: BehaviorSubject<any> = new BehaviorSubject<any>({});
     userStats$: BehaviorSubject<any> = new BehaviorSubject<any>({});
     userList$: BehaviorSubject<any> = new BehaviorSubject<any>({});
+    userScoreList$: BehaviorSubject<any> = new BehaviorSubject<any>([]);
     currentUid: string = '';
     playedGames: number = 0;
     avgTimePlayed: number = 0;
@@ -37,7 +40,15 @@ export class AuthService {
         return this.userStats$;
     }
 
-    constructor(public firebaseAuth: AngularFireAuth, private firestore: AngularFirestore, private database: AngularFireDatabase) {
+    public getLoggedIn(): Observable<any> {
+        return this.isLoggedIn$;
+    }
+
+    public getUserScoreList(): Observable<any> {
+        return this.userScoreList$;
+    }
+
+    constructor(public firebaseAuth: AngularFireAuth, private firestore: AngularFirestore, private database: AngularFireDatabase, private dataService: GameDataService) {
         this.getUsers();
         this.firebaseAuth.onAuthStateChanged(async user => {
             if(user){
@@ -45,7 +56,9 @@ export class AuthService {
                 this.getUserStats();
                 const userRef = this.firestore.collection('users').doc(user.uid).get();
                 userRef.subscribe(user => this.user$.next(user.data()));
+                this.isLoggedIn$.next(false);
             }else{
+                this.isLoggedIn$.next(false);
                 localStorage.removeItem('user');
                 this.user$.next({});
             }
@@ -56,6 +69,8 @@ export class AuthService {
         await this.firebaseAuth.signInWithEmailAndPassword(email, password)
         .then(async res=>{
             this.isLoggedIn = true;
+            this.isLoggedIn$.next(true);
+            this.editLoginDate(res.user.uid);
         }).catch(error => {
             if(error instanceof FirebaseError){
                 switch(error.code){
@@ -68,12 +83,14 @@ export class AuthService {
         });
     }
 
-    async signUp(username: string, email: string, password: string, ageGroup: string, education: string, name:string) {
+    async signUp(username: string, email: string, password: string, ageGroup: string, education: string, name:string, isPublic: string, gender: string) {
         await this.firebaseAuth.createUserWithEmailAndPassword(email, password)
         .then(res=>{
             this.isLoggedIn = true;
+            this.isLoggedIn$.next(true);
             let uid = res.user.uid;
-            this.addUserData({uid, username, email, ageGroup, education, name});
+            this.addUserData({uid, username, ageGroup, education, name, isPublic});
+            this.database.object(`users/${uid}`).set({data: {uid, username, ageGroup, education, name, isPublic, gender}})
         }).catch(error => {
             if(error instanceof FirebaseError){
                 switch(error.code){
@@ -102,6 +119,7 @@ export class AuthService {
 
     addToken(data){
         if(data){
+            this.database.object(`users/${this.getKeyByValue(data, data[Object.keys(data)[0]])}`).update({token: data})
             this.database.object('tokens/').update(data); 
             return new Promise<any>((resolve, reject) => {
                 this.firestore
@@ -111,6 +129,7 @@ export class AuthService {
                     .then(res => {}, err => reject(err))
                 }
             );
+
         }else{
             return null;
         }
@@ -121,12 +140,15 @@ export class AuthService {
     }
 
     signOut() {
+        this.isLoggedIn = false;
+        this.isLoggedIn$.next(false);
         this.firebaseAuth.signOut();
+        this.dataService.changeResultsShow(true);
     }
 
     getUsers() {
         let tempUserList;
-        const valueChanges = this.firestore.collection('users').valueChanges().pipe(
+        const valueChanges = this.database.list('users').valueChanges().pipe(
             map(users => tempUserList = users)
         )
 
@@ -156,6 +178,29 @@ export class AuthService {
             this.avgScore = parseFloat((this.avgScore / this.playedGames).toFixed(2));
             this.userStats$.next({playedGames: this.playedGames, avgTimePlayed: this.avgTimePlayed, bestScore: this.bestScore,avgScore: this.avgScore,allMolesHit: this.allMolesHit,allMolesMissed: this.allMolesMissed});
         });
+    }
+
+    async editProfile(username, ageGroup, education, name, isPublic, uid) {
+        let date = new Date();
+        this.database.object(`users/${uid}`).update({data: {uid, username, ageGroup, education, name, isPublic, date}});
+        this.firestore.collection('users').doc(uid).set({data: {uid, username, ageGroup, education, name, isPublic}}).then(err => console.log(err));
+    }
+
+    editLoginDate(uid){
+        let date = new Date();
+        this.dataService.changeSavedLastLogin(date);
+        this.database.object(`users/${uid}`).update({lastLogin: date})
+    }
+
+    getUserResults(uid) {
+        let bestScore;
+        const valueChanges = this.firestore.collection('reactionTimes').valueChanges().pipe(
+            map((reactionTimes:any) => bestScore = reactionTimes.filter((res:any) => res.id === uid).sort((a:any,b:any) => a.points - b.points).reverse()[0].points)
+        )
+        valueChanges.subscribe(() => {
+            const tempArray = this.userScoreList$.value;
+            this.userScoreList$.next([...tempArray, {uid, score: bestScore}]);
+        })
     }
 
     getFollowers(uid: string) {

@@ -1,0 +1,13 @@
+<div class="side-toggle three-switch">
+    <span class="side-toggle-label">Nehézségi szint:</span>
+    <span matTooltip="1 féle vakond" matTooltipPosition="right" type="radio" id="radio-one" name="switch-five" value="1" class="level-button" (click)="setDifficulty('easy')"><label [ngStyle]="{'background': difficulty==='easy' ? '#1ca339' : '#ffa7a7'}" for="radio-one">I</label></span>
+    <span matTooltip="2 féle vakond" matTooltipPosition="right" type="radio" id="radio-one" name="switch-five" value="2" class="level-button" (click)="setDifficulty('medium')"><label [ngStyle]="{'background': difficulty==='medium' ? '#1ca339' : '#ffa7a7'}" for="radio-one">II</label></span>
+    <span matTooltip="3 féle vakond" matTooltipPosition="right" type="radio" id="radio-one" name="switch-five" value="3" class="level-button" (click)="setDifficulty('hard')"><label [ngStyle]="{'background': difficulty==='hard' ? '#1ca339' : '#ffa7a7'}" for="radio-one">III</label></span>
+</div>
+<div class="side-toggle five-switch">
+    <span class="side-toggle-label">Játék hossza:</span>
+    <span matTooltip="15 másodperces játékidő" matTooltipPosition="right" type="radio" id="radio-one" class="level-button" (click)="setLevel('1')"><label [ngStyle]="{'background': level===1 ? '#1ca339' : '#ffa7a7'}" for="radio-one">15s</label></span>
+    <span matTooltip="30 másodperces játékidő" matTooltipPosition="right" type="radio" id="radio-one" class="level-button" (click)="setLevel('2')"><label [ngStyle]="{'background': level===2 ? '#1ca339' : '#ffa7a7'}" for="radio-one">30s</label></span>
+    <span matTooltip="1 perces játékidő" matTooltipPosition="right" type="radio" id="radio-one" class="level-button" (click)="setLevel('4')"><label [ngStyle]="{'background': level===4 ? '#1ca339' : '#ffa7a7'}" for="radio-one">1m</label></span>
+    <span matTooltip="2 perces játékidő" matTooltipPosition="right" type="radio" id="radio-one" class="level-button" (click)="setLevel('80')"><label [ngStyle]="{'background': level===80 ? '#1ca339' : '#ffa7a7'}" for="radio-one">2m</label></span>
+</div>
