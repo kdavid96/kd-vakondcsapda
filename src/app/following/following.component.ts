@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
 import { AuthService } from '../shared/auth.service';
-import { size } from 'lodash';
 
 @Component({
   selector: 'following',
@@ -16,13 +14,30 @@ export class FollowingComponent {
   followerCount:any;
   isFollowing:boolean = false;
 
+  userSub;
+  userListSub;
+
   constructor(private authService: AuthService) {
-    console.log(this.user);
-    this.authService.getUserList().subscribe(
+    this.userSub = this.authService.user$.subscribe((user) => this.user = user);
+    this.userListSub = this.authService.getUserList().subscribe(
       (users) => {
-        this.userList = users;
+        if(this.user){
+          if(!this.user.data){
+            let tempUser;
+            this.user.subscribe(user => {tempUser = user;})
+            this.userList = users.filter(user => user.data.uid !== tempUser.uid).filter(user => user.data.isPublic === "true");
+          }else{
+            this.userList = users.filter(user => user.data.uid !== this.user.data.uid).filter(user => user.data.isPublic === "true");
+          }
+        }else{
+          this.userList = users.fulter(user => user.data.isPublic === "true");
+        }
       }
     );
-    //this.user.subscribe(user => console.log(user));
+  }
+
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe();
+    this.userListSub.unsubscribe();
   }
 }

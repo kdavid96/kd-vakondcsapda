@@ -1,5 +1,5 @@
 <div class="profile">
-        {{user?.data?.name}}
+        <span class="name">{{user?.data?.name}}</span><span *ngIf="isFollowing; else followPlaceholder;"><span *ngIf="points; else pointsPlaceholder;" class="points">{{points}} pont</span></span>
     <div *ngIf="isFollowing; then unfollowButton else followButton">
         placeholder
     </div>
@@ -11,6 +11,12 @@
 </ng-template>
 <ng-template #unfollowButton>
     <div class="button-container-inline">
-        <button class="following" (click)="toggleFollow()">Követés megszűntetése</button>
+        <button class="following" (click)="toggleFollow()">Követés megszüntetése</button>
     </div>
+</ng-template>
+<ng-template #pointsPlaceholder>
+    <span class="points">Nincs elért eredmény</span>
+</ng-template>
+<ng-template #followPlaceholder>
+    <span class="points"></span>
 </ng-template>

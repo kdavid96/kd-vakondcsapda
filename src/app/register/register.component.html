@@ -1,0 +1,87 @@
+<h1>Regisztráció</h1>
+<div class="cover-div">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
+        <div>
+            <label for="username">
+                Felhasználónév
+            </label>
+            <input type="text" placeholder="" id="username" formControlName="username">
+        </div>
+        <div>
+            <label for="email">
+                Email
+            </label>
+            <input type="text" placeholder="" id="email" formControlName="email">
+        </div>
+        <div>
+            <label for="password">
+                Jelszó
+            </label>
+            <input type="password" placeholder="" id="password" formControlName="password">
+        </div>
+        <div>
+            <label for="name">
+                Név
+            </label>
+            <input type="text" placeholder="" id="name" formControlName="name">
+        </div>
+        <div>
+            <label for="ageGroup">
+                Korcsoport
+            </label>
+            <select formControlName="ageGroup" id="ageGroup">
+                <option value="">Válasszon korcsoportot...</option>
+                <option *ngFor="let age of ageGroups" [ngValue]="age">
+                    {{ age }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="education">
+                Végzettség
+            </label>
+            <select formControlName="education" id="education">
+                <option value="">Válasszon végzettségi szintet...</option>
+                <option *ngFor="let education of educationList" [ngValue]="education">
+                    {{ education }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="gender">
+                Nem
+            </label>  
+            <div class="gender-select">
+
+                <ul class="option-list">
+                    <li>
+                        <input type="radio" id="f-option" name="gender" value="female" formControlName="gender" >
+                        <label for="f-option">Nő</label>
+                        
+                        <div class="check"></div>
+                    </li>
+                    
+                    <li>
+                        <input type="radio" id="s-option" name="gender" value="male" formControlName="gender" >
+                        <label for="s-option">Férfi</label>
+                        
+                        <div class="check"><div class="inside"></div></div>
+                    </li>
+                    
+                    <li>
+                        <input type="radio" id="t-option" name="gender" value="other" formControlName="gender" >
+                        <label for="t-option">Egyéb</label>
+                        
+                        <div class="check"><div class="inside"></div></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit">Regisztráció</button>
+        </div>
+        <div class="error" [ngClass]="{'invisible': !error}">
+            <span style="color: red">{{errorMessage}}</span>
+        </div>
+    </form>
+</div>

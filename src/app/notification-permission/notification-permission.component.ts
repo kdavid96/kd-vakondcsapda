@@ -9,9 +9,11 @@ import { MessagingService } from 'src/app/shared/messaging.service';
 @Component({
   selector: 'notification-permission',
   template: `
-  <button (click)="requestPermission()" [ngStyle]="{'display': isClicked ? 'none' : 'block'}" class="noti-button">
-    Értesítések<br/>engedélyezése
-  </button>
+  <div class="noti-button-container" [ngStyle]="{'display': isClicked ? 'none' : 'flex'}">
+    <button (click)="requestPermission()" [ngStyle]="{'display': isClicked ? 'none' : 'block'}" class="noti-button">
+      Értesítések<br/>engedélyezése
+    </button>
+  </div>
   `,
   styleUrls: ['notification-permission.css']
 })
@@ -36,8 +38,10 @@ export class NotificationPermissionComponent {
     })
     this.currentMessage.subscribe(message => {
       if(message){
-        console.log(message);
-        this.toast.info(message.notification.title, message.notification.body);
+        this.toast.info(message.notification.title, message.notification.body, {
+          titleClass: "center",
+          messageClass: "center"
+        });
       }
     })
   }

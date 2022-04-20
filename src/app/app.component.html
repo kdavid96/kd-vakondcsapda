@@ -1,13 +1,16 @@
 <!doctype html>
-<div class="solar">
-    <span class="sun" [ngClass]="{'sun-in': !darkMode, 'sun-out': darkMode}"></span>
-    <span class="moon" [ngClass]="{'moon-in': darkMode, 'moon-out': !darkMode}"></span>
-    <label class="switch">
-        <span class="slider round" [ngClass]="{'checked-button': darkMode}" (click)="darkMode = !darkMode">
-            <span class="slider-circle" [ngClass]="{'checked': darkMode}" ></span>
-        </span>
-    </label>
+<div class="solar" [ngClass]="{'dark': darkMode, 'sunny': !darkMode}">
+    <div class="header-buttons">
+        <button *ngIf="router.url !== '/' && router.url !== '/play' && router.url !== '/play_test'" routerLink="/">Vissza</button>
+        <button *ngIf="loggedIn && router.url === '/'" routerLink="/profile">Profil</button>
+        <button class="profile-button sign-out-button" routerLink="/play_test" *ngIf="!loggedIn && router.url !== '/play_test'">Próba játék</button>
+        <button class="profile-button sign-out-button" (click)="signOut()" *ngIf="loggedIn && router.url !== '/play'">Kijelentkezés</button>
+    </div>
+    <span (click)="darkMode = !darkMode" class="sun" [ngClass]="{'sun-in': !darkMode, 'sun-out': darkMode}"></span>
+    <span (click)="darkMode = !darkMode" class="moon" [ngClass]="{'moon-in': darkMode, 'moon-out': !darkMode}"></span>
 </div>
-<div class="content" [ngClass]="{'dark': darkMode}">
-    <game-board [darkMode]="darkMode" style="width: 99%; height: 100%;"></game-board>
+<div class="content" [ngClass]="{'dark': darkMode}" style="width: 100%; height: 92%; background: white;">
+    <login-results style="width: 100%; height: 100%; position: relative; display: flex; justify-content: center; align-items: center;" *ngIf="loggedIn && resultsShow"></login-results>
+    <router-outlet></router-outlet>
 </div>
+<div class="footer"></div>

@@ -89,6 +89,7 @@ form {
     align-items: center;
     overflow: scroll;
     padding-right: 15px;
+    padding-top: 5px;
 }
 
 form::-webkit-scrollbar{
@@ -156,6 +157,7 @@ form > div > select {
     margin: 0;
     padding: 0;
     overflow: auto;
+    width: 312px;
 }
   
 .option-list li{

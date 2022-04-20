@@ -1,7 +1,7 @@
 .profile{
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -30,4 +30,24 @@
 .following{
     color: white;
     background-color: #538bff !important;
+}
+
+button {
+    cursor: pointer;
+}
+
+.profile > span:nth-of-type(1){
+    width: 25%;
+}
+
+.profile > span:nth-of-type(2){
+    width: 50%;
+}
+
+.profile > span:nth-of-type(3){
+    width: 25%;
+}
+
+.points {
+    font-size: 1.7vw;
 }

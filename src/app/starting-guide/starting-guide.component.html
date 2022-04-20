@@ -1,17 +1,19 @@
 <div class="starting-guide-container">
     <mat-horizontal-stepper [linear]="false" [labelPosition]="'bottom'" [@.disabled]="true">
-
+        <ng-template matStepperIcon="edit">
+            <mat-icon>check</mat-icon>
+        </ng-template>
         <mat-step [editable]="true" label="Általános tájékoztató" class="mat-step">
             <div class="stepper-content animate">
                 <div id="1">
                     <h1>Általános tájékoztató</h1>
                     <p>
-                        Az alkalmazás használatához szükséges egy ingyenesen regisztrálható felhasználói fiók.<br/>
-                        Az adatok tárolása és feldolgozása harmadik fél által biztosított szerveren történik.<br/>
-                        Az alkalmazás használatához szükséges megadnia a végzettségét valamint korcsoportját.<br/>
-                        Ezen adatok szükségesek az eredmények feldolgozásához.<br/>
-                        A felhasználó azonosítása email cím alapján történik, ennek következtében ennek megadása is szükséges az alkalmazás használatához.<br/>
-                        A "Tovább" gombra kattintva elfogadja a felhasználási feltételeket és továbblép az alkalmazás használatát bemutató útmutatóra.
+                        Az alkalmazás használatához szükséges egy ingyenesen regisztrálható felhasználói fiók.<br/><br/>
+                        Az adatok tárolása és feldolgozása harmadik fél által biztosított szerveren történik.<br/><br/>
+                        Az alkalmazás használatához szükséges megadnia a végzettségét valamint korcsoportját.<br/><br/>
+                        Ezen adatok szükségesek az eredmények feldolgozásához.<br/><br/>
+                        A felhasználó azonosítása email cím alapján történik, ennek következtében ennek megadása is szükséges az alkalmazás használatához.<br/><br/>
+                        A "Következő" gombra kattintva elfogadja a felhasználási feltételeket és továbblép az alkalmazás használatát bemutató útmutatóra.
                     </p>
                 </div>
                 <div class="flex-buttons">
@@ -25,7 +27,7 @@
             <div class="stepper-content">
                 <div id="2">
                     <h1>Első lépés</h1>
-                    <p>Lépjen be a felhasználói fiókjába ha már rendelkezik eggyel, ha nem, akkor pedig regisztráljon egyet ingyenesen.<br/>
+                    <p>Lépjen be a felhasználói fiókjába ha már rendelkezik eggyel, ha nem, akkor pedig regisztráljon egyet ingyenesen.<br/><br/>
                         Ha nem kíván regisztrálni, úgy is lehetősége van kipróbálni a programot, viszont ilyenkor az eredmények nem lesznek elmentve az adatbázisban és nem tudja követni a teljesítményét.
                     </p>
                 </div>
@@ -42,9 +44,15 @@
                 <div id="3">
                     <h1>Második lépés</h1>
                     <p>
-                        Válassza ki a nehézségi fokozatot, majd indítsa el a tesztet. <br/>
-                        Attól függően, hogy milyen eszközről indította el az alkalmazást, a találatot a helyes nyíl billentyű lenyomásával, érintőképernyős készülék esetén pedig a pálya helyes részére kattintva regisztrálja az alkalmazás.
+                        Válassza ki a nehézségi fokozatot, majd indítsa el a tesztet. <br/><br/>
+                        Attól függően, hogy milyen eszközről indította el az alkalmazást, a találatot a helyes nyíl billentyű lenyomásával, érintőképernyős készülék esetén pedig a pálya helyes részére kattintva regisztrálja az alkalmazás.<br/>
                     </p>
+                    <div class="arrow-key-container">
+                        <div id="up" class="arrow-key up" data-key="arrowup">&#8593;</div><br>
+                        <div id="left" class="arrow-key left" data-key="arrowleft">&#8592;</div>
+                        <div id="down" class="arrow-key down" data-key="arrowdown">&#8595;</div>
+                        <div id="right" class="arrow-key right" data-key="arrowright">&#8594;</div>
+                    </div>
                 </div>
                 <div class="flex-buttons">
                     <button matStepperPrevious (click)="animate(2)">Előző</button>
@@ -58,12 +66,12 @@
             <div class="stepper-content">
                 <div id="4">
                     <h1>Harmadik lépés</h1>
-                    <p>A teszt végeztével eredményeit megtekintheti a statisztikák fül alatt!</p>
+                    <p>A teszt végeztével eredményeit megtekintheti a statisztikák fül alatt!</p><br/>
+                    <p>Jó szórakozást!</p>
                 </div>
                 <div class="flex-buttons">
                     <button matStepperPrevious (click)="animate">Előző</button>
                     <button (click)="changeStartingGuide()">Befejezés</button>
-                    <button (click)="changeStartingGuide()">Kihagyás</button>
                 </div>
             </div>
         </mat-step>

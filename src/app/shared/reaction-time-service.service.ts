@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Observable } from 'rxjs';
+import { GameDataService } from './game-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,21 +11,36 @@ export class ReactionTimeServiceService {
 
   reactionTimesArray: AngularFirestoreCollection<any>;
 
-  constructor(private firestore: AngularFirestore, private database: AngularFireDatabase) { }
+  constructor(private firestore: AngularFirestore, private database: AngularFireDatabase, private dataService: GameDataService) { }
 
-  createReactionTimeResult(data, id, difficulty, points) {
-    let date = this.formatDate(new Date().toISOString());
-    if(data.length && id !== null && id !== 0 && id !== 'noid'){
+  createReactionTimeResult(data, user, difficulty, points, level) {
+    let date = new Date();
+    let id = user.data.uid ? user.data.uid : 'noid';
+    if(data.length && id !== 'noid'){
       return new Promise<any>((resolve, reject) => {
         this.firestore
           .collection('reactionTimes')
           .add({data, id, difficulty, date, points})
           .then(res => {}, err=> reject(err));
-        this.database.list('reactionTimes').push({data, id, difficulty, date, points});      
+        this.database.list('reactionTimes').push({data, id, difficulty, date: date.getTime(), points, level});
       })
     }else{
       return null;
     }
+  }
+
+  getLastReactions(){
+    let returnArray = [];
+    this.dataService.currentSavedLastLogin.subscribe(value => {
+      if(value){
+        this.getReactionTimeResults().subscribe(values => {
+          values.map((innerValue:any) => {
+            innerValue.date.toMillis() > value.getTime() ? returnArray.push({date: innerValue.date, id: innerValue.id, difficulty: innerValue.difficulty, points: innerValue.points}) : ''
+          })
+        });
+        this.dataService.changeLastResultsList(returnArray);
+      }
+    });
   }
 
   getReactionTimeResults(){
@@ -34,12 +50,6 @@ export class ReactionTimeServiceService {
 
   getReactionTimeResultsRealtime(){
     return this.database.list('reactionTimes');
-  }
-
-  formatDate(date){
-    var [datePart, timePart] = date.split('T');
-    var returnString = datePart.split('-')[0] + "." + datePart.split('-')[1] + "." + datePart.split('-')[2] + " " + timePart.split(':')[0] + ":" + timePart.split(':')[1] + ":" + timePart.split(':')[2].split('.')[0];
-    return returnString;
   }
 
 }

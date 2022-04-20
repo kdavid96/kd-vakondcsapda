@@ -1,0 +1,22 @@
+<h1>Bejelentkezés</h1>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
+    <div>
+        <label for="emailLogin">
+            E-mail cím
+        </label>
+        <input type="text" placeholder="" id="emailLogin" formControlName="emailLogin">
+    </div>
+    <div>
+        <label for="passwordLogin">
+            Jelszó
+        </label>
+        <input type="password" placeholder="" id="passwordLogin" formControlName="passwordLogin">
+    </div>
+    <div class="button-container">
+        <button class="button" type="submit">Bejelentkezés</button>
+    </div>
+    <div class="error" [ngClass]="{'transparent': !error}">
+        <span style="color: red" [ngClass]="{'transparent': !error}">{{errorMessage}}</span>
+    </div>
+    <p>Nincs még felhasználója? <a routerLink="/register">Regisztráció</a></p>
+</form>
