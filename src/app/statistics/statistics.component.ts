@@ -44,7 +44,6 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.destroy();
-    this.loadHitsPerSecondsChart();
   }
 
   loadOwnHitsPerSecondsChart(): any {

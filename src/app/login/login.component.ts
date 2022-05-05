@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         this.loginForm.reset();
         this.dataService.changeLoggedIn(true);
         this.router.navigateByUrl('/');
-        this.authService.user$.subscribe(user => {if(user.data.token) this.dataService.changeShowGuide(false)});
+        this.authService.user$.subscribe(user => {if(user?.data.token) this.dataService.changeShowGuide(false)});
       })
       .catch(error => {
         this.loginForm.reset();

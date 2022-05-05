@@ -16,6 +16,7 @@ export class AuthService {
     userStats$: BehaviorSubject<any> = new BehaviorSubject<any>({});
     userList$: BehaviorSubject<any> = new BehaviorSubject<any>({});
     userScoreList$: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+    bestFollowingResult$: BehaviorSubject<any> = new BehaviorSubject<any>([]);
     currentUid: string = '';
     playedGames: number = 0;
     avgTimePlayed: number = 0;
@@ -46,6 +47,10 @@ export class AuthService {
 
     public getUserScoreList(): Observable<any> {
         return this.userScoreList$;
+    }
+
+    public getBestFollowingResult(): Observable<any> {
+        return this.bestFollowingResult$;
     }
 
     constructor(public firebaseAuth: AngularFireAuth, private firestore: AngularFirestore, private database: AngularFireDatabase, private dataService: GameDataService) {
@@ -144,6 +149,7 @@ export class AuthService {
         this.isLoggedIn$.next(false);
         this.firebaseAuth.signOut();
         this.dataService.changeResultsShow(true);
+        this.user$.next({});
     }
 
     getUsers() {
@@ -201,6 +207,25 @@ export class AuthService {
             const tempArray = this.userScoreList$.value;
             this.userScoreList$.next([...tempArray, {uid, score: bestScore}]);
         })
+    }
+
+
+    loadBestFollowingResult(uid) {
+        let uids;
+        let newestScore;
+        this.database.object(`following/${uid}`).valueChanges().subscribe((users:any) => {
+            if(users) uids = Object.keys(users);
+            const valueChanges = this.firestore.collection('reactionTimes').valueChanges().pipe(
+                map((reactionTimes:any) => {
+                    uids.map(uid => {
+                        newestScore = reactionTimes.filter((res:any) => res.id === uid).sort((a:any,b:any) => a.date - b.date).reverse()[0];
+                    })
+                }
+            ));
+            valueChanges.subscribe(() => {
+                this.bestFollowingResult$.next({id: newestScore.id, points: newestScore.points});
+            })
+        });
     }
 
     getFollowers(uid: string) {

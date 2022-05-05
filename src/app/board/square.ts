@@ -93,6 +93,9 @@ export class Square {
     this.mole.src="../assets/mole_trp_smol.png";
     this.mole2.src="../assets/mole_trp_smol_v2.png";
     this.mole3.src="../assets/mole_trp_smol_v3.png";
+
+    coordinateArray = coordinateArray.reverse();
+
     //(0,0)---(360,360) közötti koordináták az átló
     for(let i = 0 ; i < coordinateArray.length ; i++){
       (outerZ*coordinateArray[i]['x']) > 360 ? coordinateArray[i]['x'] = 0 : '';

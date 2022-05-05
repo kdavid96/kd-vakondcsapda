@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { GameDataService } from '../shared/game-data.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
 import { Router } from '@angular/router';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'game-menu',
@@ -22,6 +23,9 @@ export class MenuComponent implements OnInit {
   isProfileOverlayOpen: boolean = false;
   startOverlay: boolean = true;
   showGuide: boolean = true;
+  user: any;
+  bestFollowingResult: any;
+  userList: any;
 
   difficulty: string;
   level: number = 1;
@@ -30,8 +34,11 @@ export class MenuComponent implements OnInit {
   startedSub;
   loggedInSub;
   showGuideSub;
+  userSub;
+  bestFollowingResultSub;
+  userListSub;
 
-  constructor(private gameDataService: GameDataService, public router: Router) {
+  constructor(private gameDataService: GameDataService, public router: Router, private authService: AuthService) {
     this.loggedInUser = JSON.parse(localStorage.getItem('user'));
   }
 
@@ -40,16 +47,29 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userListSub = this.authService.getUserList().subscribe(userList => this.userList = userList);
     this.overlaySub = this.gameDataService.currentStartOverlay.subscribe(value => this.startOverlay = value);
     this.startedSub = this.gameDataService.currentStarted.subscribe(value => this.started = value);
-    this.loggedInSub = this.gameDataService.currentLoggedIn.subscribe(value => this.isLoggedIn = value);
+    this.loggedInSub = this.gameDataService.currentLoggedIn.subscribe(value => {this.isLoggedIn = value});
     this.showGuideSub = this.gameDataService.currentStartOverlay.subscribe(value => this.showGuide = value);
+    this.userSub = this.authService.getUser().subscribe(user => {this.user = user.data; if(this.isLoggedIn) this.loadBestFollowingResult()});
+    this.bestFollowingResultSub = this.authService.bestFollowingResult$.subscribe(bestFollowingResult => {
+      this.bestFollowingResult = bestFollowingResult;
+      if(this.userList && this.isLoggedIn){
+        let tempId = this.bestFollowingResult.id;
+        this.bestFollowingResult.id = this.userList.filter((user:any) => user.data.uid === tempId)[0].data.username;
+      }
+    });
   }
 
   ngOnDestroy(): void {
+    this.userListSub.unsubscribe();
     this.overlaySub.unsubscribe();
     this.startedSub.unsubscribe();
     this.loggedInSub.unsubscribe();
+    this.showGuideSub.unsubscribe();
+    this.userSub.unsubscribe();
+    this.bestFollowingResultSub.unsubscribe();
   }
 
   isClickedEvent(args){
@@ -72,6 +92,12 @@ export class MenuComponent implements OnInit {
 
   loadCharts() {
     this.childStatistics.loadHitsPerSecondsChart();
+  }
+
+  loadBestFollowingResult() {
+    if(this.user){
+      this.authService.loadBestFollowingResult(this.user.uid);
+    }
   }
 
   play(){

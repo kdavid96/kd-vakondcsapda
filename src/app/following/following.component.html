@@ -2,7 +2,7 @@
     <div class="to-follow">
         <ul *ngIf="userList.length>0; else placeHolder" class="to-follow-list">
             <li class="header">
-                <span>Felhaszálónév</span><span>Legmagasabb pontszám</span><span></span>
+                <span>Felhaszálónév</span><!--<span>Legmagasabb pontszám</span>--><span></span>
             </li>
             <li *ngFor="let user of userList">
                 <user-profile style="width:100%" [user]="user" *ngIf="user.data.uid!==userId"></user-profile>

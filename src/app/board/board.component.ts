@@ -1,12 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import { COLS, ROWS, BLOCK_SIZE} from '../constants';
 import { CountdownComponent } from '../countdown/countdown.component';
-import { StatisticsComponent } from '../statistics/statistics.component';
-import { TablesComponent } from '../tables/tables.component';
 import { ReactionTimeServiceService } from '../shared/reaction-time-service.service';
 import { Square } from './square';
 import { GameDataService } from '../shared/game-data.service';
-import { Observable, of as ObservableOf } from 'rxjs';
 import { AuthService } from '../shared/auth.service';
 import { Router } from '@angular/router';
 
@@ -491,8 +488,8 @@ export class BoardComponent implements OnInit {
     let coordinateArray = [];
     switch(this.difficulty){
       case 'easy': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); new Square(this.ctx).draw(x,y,this.roadPlace,this.direction); break;
-      case 'medium': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); coordinateArray.reverse(); new Square(this.ctx).drawMultiple(2,coordinateArray,this.roadPlace,this.direction);break;
-      case 'hard': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.reverse(); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(3,coordinateArray,this.roadPlace,this.direction);break;
+      case 'medium': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(2,coordinateArray,this.roadPlace,this.direction);break;
+      case 'hard': [x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y});[x,y] = this.generateMolePosition(this.roadPlace, this.direction); coordinateArray.push({x,y}); new Square(this.ctx).drawMultiple(3,coordinateArray,this.roadPlace,this.direction);break;
     }
 
     this.squares.forEach((square, index) => {
