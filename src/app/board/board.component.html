@@ -12,7 +12,7 @@
         <ul class="data-list">
           <p>Pontszám: {{ points }}</p>
           <p>Találatok: {{ moles }}</p>
-          <p>Szint: {{ level }}</p> 
+          <p>Nehézségi szint: {{ difficulty | translatePipe }}</p> 
         </ul>
       </div>
       <div [ngClass]="{'invisible': !showResult}" class="game-data-result">
@@ -21,7 +21,7 @@
           <ul class="data- ist">
             <p>Pontszám: {{ points }}</p>
             <p>Találatok: {{ moles }}</p>
-            <p>Szint: {{ level }}</p> 
+            <p>Nehézségi szint: {{ difficulty | translatePipe }}</p> 
           </ul>
           <button (click)="play()">Újra</button>
           <button routerLink="/">Vissza a főoldalra</button>

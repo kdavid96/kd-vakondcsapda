@@ -29,6 +29,7 @@ import { CountdownPipe } from './pipes/countdown.pipe';
 import { TimelinePipe } from './pipes/timeline.pipe';
 import { DifficultyPipe } from './pipes/difficulty.pipe';
 import { HitsPipe } from './pipes/hits.pipe';
+import { TranslatePipe } from './pipes/translate.pipe';
 import { UserComponent } from './user/user.component';
 import { StartingGuideComponent } from './starting-guide/starting-guide.component';
 import { AuthService } from './shared/auth.service';
@@ -57,6 +58,7 @@ import { LoginResultsComponent } from './login-results/login-results.component';
     CountdownPipe,
     DifficultyPipe,
     HitsPipe,
+    TranslatePipe,
     TimelineComponent,
     StatisticsComponent,
     TablesComponent,
